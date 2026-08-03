@@ -68,7 +68,7 @@ function RouteLoader() {
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <Chrome />
       <Suspense fallback={<RouteLoader />}>
         <Routes>
