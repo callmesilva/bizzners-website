@@ -11,17 +11,24 @@ import { DemoSwitch } from "./shared/DemoSwitch";
 
 const Selector = lazy(() => import("./selector/Selector"));
 const SimpleSite = lazy(() => import("./designs/simple/SimpleSite"));
+const SimpleBSite = lazy(() => import("./designs/simpleb/SimpleBSite"));
 const ModernSite = lazy(() => import("./designs/modern/ModernSite"));
+const ModernBSite = lazy(() => import("./designs/modernb/ModernBSite"));
 const WildSite = lazy(() => import("./designs/wild/WildSite"));
+const WildBSite = lazy(() => import("./designs/wildb/WildBSite"));
 
 const TITLES: Record<string, string> = {
   "/": "Bizzners — Design Concepts",
-  "/simple": "Bizzners — Concept 01 · Simple",
-  "/modern": "Bizzners — Concept 02 · Modern",
-  "/wild": "Bizzners — Concept 03 · Wild",
+  "/simple": "Bizzners — 01·A Simple · Quiet",
+  "/simple-b": "Bizzners — 01·B Simple · Swiss",
+  "/modern": "Bizzners — 02·A Modern · Editorial",
+  "/modern-b": "Bizzners — 02·B Modern · Aurora",
+  "/wild": "Bizzners — 03·A Wild · Command Center",
+  "/wild-b": "Bizzners — 03·B Wild · Manifest",
 };
 
-const LIGHT_SURFACES = new Set(["/simple", "/modern"]);
+const LIGHT_SURFACES = new Set(["/simple", "/simple-b", "/modern", "/wild-b"]);
+const CONCEPT_BASES = ["/simple", "/modern", "/wild"];
 
 /** Per-route chrome: title, scroll reset, body surface, keyboard jumps, switcher pill. */
 function Chrome() {
@@ -46,14 +53,20 @@ function Chrome() {
       ) {
         return;
       }
-      if (event.key === "1") navigate("/simple");
-      else if (event.key === "2") navigate("/modern");
-      else if (event.key === "3") navigate("/wild");
-      else if (event.key === "0" || event.key === "Escape") navigate("/");
+      const variant = pathname.endsWith("-b") ? "-b" : "";
+      if (event.key === "1") navigate(`/simple${variant}`);
+      else if (event.key === "2") navigate(`/modern${variant}`);
+      else if (event.key === "3") navigate(`/wild${variant}`);
+      else if (event.key === "b" || event.key === "B") {
+        const base = pathname.replace(/-b$/, "");
+        if (CONCEPT_BASES.includes(base)) {
+          navigate(pathname.endsWith("-b") ? base : `${base}-b`);
+        }
+      } else if (event.key === "0" || event.key === "Escape") navigate("/");
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [navigate]);
+  }, [navigate, pathname]);
 
   return pathname === "/" ? null : <DemoSwitch current={pathname} />;
 }
@@ -74,8 +87,11 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Selector />} />
           <Route path="/simple" element={<SimpleSite />} />
+          <Route path="/simple-b" element={<SimpleBSite />} />
           <Route path="/modern" element={<ModernSite />} />
+          <Route path="/modern-b" element={<ModernBSite />} />
           <Route path="/wild" element={<WildSite />} />
+          <Route path="/wild-b" element={<WildBSite />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Suspense>

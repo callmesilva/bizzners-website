@@ -7,11 +7,11 @@ interface Concept {
   n: string;
   key: "simple" | "modern" | "wild";
   name: string;
-  to: string;
   accent: string;
   pitch: string;
   tags: string[];
-  look: string[];
+  variantA: { to: string; name: string; blurb: string };
+  variantB: { to: string; name: string; blurb: string };
 }
 
 const CONCEPTS: Concept[] = [
@@ -19,34 +19,58 @@ const CONCEPTS: Concept[] = [
     n: "01",
     key: "simple",
     name: "Simple",
-    to: "/simple",
     accent: "#6c9bff",
     pitch:
       "Quiet confidence. Typography, whitespace and the brand navy doing all the talking.",
     tags: ["CSS-only motion", "Lightest load", "Minimal imagery"],
-    look: ["Soft scroll reveals", "Editorial numbered toolkit", "Calm, airy pacing"],
+    variantA: {
+      to: "/simple",
+      name: "Quiet",
+      blurb: "Warm paper, airy editorial rhythm",
+    },
+    variantB: {
+      to: "/simple-b",
+      name: "Swiss",
+      blurb: "Cool white, hairline grid, mono indexes",
+    },
   },
   {
     n: "02",
     key: "modern",
     name: "Modern",
-    to: "/modern",
     accent: "#7c93f5",
     pitch:
-      "2026 editorial-tech. Cream paper, oversized serif moments, bento layouts in motion.",
-    tags: ["Motion reveals", "Animated cycle wheel", "Mobile-tamed"],
-    look: ["Bento method grid", "Serif italic accents", "Sticky glass nav"],
+      "2026 trends in two temperatures — serif editorial bento, or dark aurora glass.",
+    tags: ["Motion reveals", "Live cycle piece", "Mobile-tamed"],
+    variantA: {
+      to: "/modern",
+      name: "Editorial",
+      blurb: "Cream paper, serif moments, animated wheel",
+    },
+    variantB: {
+      to: "/modern-b",
+      name: "Aurora",
+      blurb: "Night glass, gradient ink, drifting light",
+    },
   },
   {
     n: "03",
     key: "wild",
     name: "Wild",
-    to: "/wild",
     accent: "#ff5d6c",
     pitch:
-      "A global trade command center. WebGL globe, pinned scroll scenes, kinetic type.",
-    tags: ["three.js globe", "GSAP scroll scenes", "Desktop showpiece"],
-    look: ["Trade arcs out of Panamá", "Pinned negotiation cycle", "Custom cursor & marquees"],
+      "The showpieces. A WebGL trade globe — or a brutalist cargo manifest in motion.",
+    tags: ["GSAP scroll scenes", "Desktop showpiece", "Custom chrome"],
+    variantA: {
+      to: "/wild",
+      name: "Command Center",
+      blurb: "three.js globe, pinned cycle, dark HUD",
+    },
+    variantB: {
+      to: "/wild-b",
+      name: "Manifest",
+      blurb: "Cargo-paper brutalism, container train",
+    },
   },
 ];
 
@@ -104,20 +128,19 @@ export default function Selector() {
         <h1 className="sel-title">
           Three directions.
           <br />
-          One brand.
+          Two takes on each.
         </h1>
         <p className="sel-sub">
-          Every concept is a full, working site built from the 2024 brochure — same
-          content, three temperatures. Explore each one and tell us which feels like
-          Bizzners.
+          Six full working sites built from the 2024 brochure — same content in every
+          one, so the comparison is honest. Explore them all and tell us which feels
+          like Bizzners.
         </p>
       </section>
 
       <section className="sel-grid" aria-label="Design concepts">
         {CONCEPTS.map((c, i) => (
-          <Link
+          <article
             key={c.key}
-            to={c.to}
             className={`sel-card sel-card--${c.key}`}
             style={{ "--acc": c.accent, "--i": i } as React.CSSProperties}
           >
@@ -126,39 +149,42 @@ export default function Selector() {
               <span className="sel-card__name">{c.name}</span>
               <kbd className="sel-card__kbd">{i + 1}</kbd>
             </div>
-            <Poster concept={c.key} />
+            <Link to={c.variantA.to} className="sel-card__posterlink" aria-label={`Open ${c.name} · variant A`}>
+              <Poster concept={c.key} />
+            </Link>
             <p className="sel-card__pitch">{c.pitch}</p>
             <ul className="sel-card__tags">
               {c.tags.map((t) => (
                 <li key={t}>{t}</li>
               ))}
             </ul>
-            <div className="sel-card__look">
-              <span className="sel-card__look-label">What to look for</span>
-              <ul>
-                {c.look.map((l) => (
-                  <li key={l}>{l}</li>
-                ))}
-              </ul>
+            <div className="sel-card__variants">
+              {[c.variantA, c.variantB].map((v, vi) => (
+                <Link key={v.to} to={v.to} className="sel-variant">
+                  <span className="sel-variant__badge">{vi === 0 ? "A" : "B"}</span>
+                  <span className="sel-variant__meta">
+                    <b>{v.name}</b>
+                    <i>{v.blurb}</i>
+                  </span>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M5 12h14" />
+                    <path d="m13 6 6 6-6 6" />
+                  </svg>
+                </Link>
+              ))}
             </div>
-            <span className="sel-card__cta">
-              Open concept
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M5 12h14" />
-                <path d="m13 6 6 6-6 6" />
-              </svg>
-            </span>
-          </Link>
+          </article>
         ))}
       </section>
 
       <footer className="sel-foot">
         <p className="sel-foot__hint">
-          Press <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> to jump between concepts —{" "}
-          <kbd>0</kbd> brings you back. A floating switcher rides along on every demo.
+          Press <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> to jump between concepts,{" "}
+          <kbd>B</kbd> to flip the A/B variant — <kbd>0</kbd> brings you back. A floating
+          switcher rides along on every demo.
         </p>
         <p className="sel-foot__note">
-          Same copy, same structure in all three — an honest comparison. Photography is
+          Same copy, same structure in all six — an honest comparison. Photography is
           placeholder; generation prompts ship in <code>PROMPTS.md</code>.
         </p>
         <p className="sel-foot__legal">{site.legal}</p>

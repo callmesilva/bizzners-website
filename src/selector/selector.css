@@ -220,23 +220,87 @@
   color: var(--acc);
 }
 
-.sel-card__cta {
+.sel-card__posterlink {
+  display: block;
+  border-radius: 13px;
+}
+
+.sel-card__posterlink:focus-visible {
+  outline: 2px solid var(--acc);
+  outline-offset: 3px;
+}
+
+.sel-card__variants {
   margin-top: auto;
-  display: inline-flex;
-  align-items: center;
+  display: grid;
   gap: 8px;
+}
+
+.sel-variant {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid rgba(130, 150, 230, 0.22);
+  border-radius: 14px;
+  text-decoration: none;
+  transition:
+    border-color 0.25s ease,
+    background 0.25s ease,
+    transform 0.25s ease;
+}
+
+.sel-variant:hover,
+.sel-variant:focus-visible {
+  border-color: color-mix(in srgb, var(--acc) 65%, transparent);
+  background: color-mix(in srgb, var(--acc) 10%, transparent);
+  transform: translateX(3px);
+  outline: none;
+}
+
+.sel-variant__badge {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 800;
+  color: #0e1230;
+  background: var(--acc);
+  flex-shrink: 0;
+}
+
+.sel-variant__meta {
+  display: grid;
+  line-height: 1.3;
+  min-width: 0;
+}
+
+.sel-variant__meta b {
   font-size: 0.92rem;
   font-weight: 700;
-  color: #fff;
+  color: #eef1ff;
 }
 
-.sel-card__cta svg {
-  transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
+.sel-variant__meta i {
+  font-style: normal;
+  font-size: 0.78rem;
+  color: #96a1d8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.sel-card:hover .sel-card__cta svg,
-.sel-card:focus-visible .sel-card__cta svg {
-  transform: translateX(5px);
+.sel-variant svg {
+  margin-left: auto;
+  color: var(--acc);
+  flex-shrink: 0;
+  transition: transform 0.25s ease;
+}
+
+.sel-variant:hover svg {
+  transform: translateX(4px);
 }
 
 /* ---------- miniature posters ---------- */
