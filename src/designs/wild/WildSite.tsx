@@ -10,18 +10,25 @@ import "./wild.css";
 
 gsap.registerPlugin(ScrollTrigger);
 
-/** per-char spans grouped into unbreakable words (screen readers get plain text) */
+/**
+ * Per-char spans grouped into unbreakable words. Word spaces must live
+ * OUTSIDE the nowrap inline-block wrappers (trailing spaces inside them
+ * get trimmed), and the animated copy is unselectable so copying the
+ * line yields only the clean sr-only text.
+ */
 function Chars({ text }: { text: string }) {
   return (
     <>
       <span className="sr-only">{text}</span>
       {text.split(" ").map((word, wi) => (
-        <span className="w-word" aria-hidden="true" key={wi}>
-          {word.split("").map((ch, i) => (
-            <span className="w-ch" key={i}>
-              {ch}
-            </span>
-          ))}{" "}
+        <span aria-hidden="true" key={wi}>
+          <span className="w-word">
+            {word.split("").map((ch, i) => (
+              <span className="w-ch" key={i}>
+                {ch}
+              </span>
+            ))}
+          </span>{" "}
         </span>
       ))}
     </>

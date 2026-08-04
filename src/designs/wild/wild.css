@@ -754,6 +754,10 @@
   color: var(--w-red);
 }
 
+.w-chain__line span[aria-hidden] {
+  user-select: none;
+}
+
 .w-word {
   display: inline-block;
   white-space: nowrap;
