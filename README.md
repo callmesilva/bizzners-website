@@ -24,13 +24,16 @@ Navigation sugar: press **1 / 2 / 3** to jump concepts, **B** to flip the A/B va
 ## Run it
 
 ```bash
-pnpm install
-pnpm dev        # http://localhost:5173
-pnpm build      # production build → dist/
-pnpm preview    # serve the production build
+make dev          # http://localhost:5173 (installs deps on first run)
+make build        # production build → dist/
+make build-pages  # same build with the GitHub Pages base path + SPA fallback
+make preview      # serve the production build
+make help         # every target
 ```
 
-Node ≥ 22 and pnpm (see `packageManager`).
+Or drive pnpm directly: `pnpm install`, then `pnpm dev` / `pnpm build` / `pnpm preview`.
+
+Node ≥ 22 and pnpm (see `packageManager`). Override the port with `make dev PORT=3000`.
 
 ## How it's put together
 
