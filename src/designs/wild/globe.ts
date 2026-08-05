@@ -341,8 +341,7 @@ export function createGlobe(canvas: HTMLCanvasElement, opts: GlobeOptions): Glob
   let raf = 0;
   let running = false;
   let inView = true;
-  const clock = new THREE.Clock();
-  let elapsed = 0;
+  const timer = new THREE.Timer();
 
   const frame = () => {
     raf = 0;
@@ -350,8 +349,8 @@ export function createGlobe(canvas: HTMLCanvasElement, opts: GlobeOptions): Glob
       running = false;
       return;
     }
-    elapsed += clock.getDelta();
-    const t = elapsed;
+    timer.update();
+    const t = timer.getElapsed();
 
     globe.rotation.y = t * 0.05;
     pulse.scale.setScalar(0.07 + Math.sin(t * 2.6) * 0.022);
@@ -380,7 +379,8 @@ export function createGlobe(canvas: HTMLCanvasElement, opts: GlobeOptions): Glob
 
   const kick = () => {
     if (!running && !raf) {
-      clock.getDelta();
+      // drop the idle gap so resuming doesn't jump the animation forward
+      timer.reset();
       raf = requestAnimationFrame(frame);
     }
   };
