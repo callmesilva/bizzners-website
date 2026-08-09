@@ -19,13 +19,20 @@ client looks at layout first. Merging it would:
 Nothing is deleted — every concept and every timeline still ships. The state above
 is produced entirely by the flags in [`src/config/flags.ts`](src/config/flags.ts).
 
-## 📡 Getting it in front of the client without merging
+## 📡 The live site is currently serving THIS branch
 
-`.github/workflows/deploy.yml` only auto-deploys `main`, so the live Pages URL still
-shows the full six-concept demo. To publish *this* branch for the meeting, run the
-**Deploy to GitHub Pages** workflow manually (`workflow_dispatch`) with this branch
-selected — no merge needed. Re-run it from `main` afterwards to put the full demo
-back.
+⚠️ **https://callmesilva.github.io/bizzners-website/ is the review build, not `main`.**
+It was published with a manual `workflow_dispatch` of **Deploy to GitHub Pages** on
+this branch — no merge involved. Two things were needed and both are reversible:
+
+- `do-not-merge/client-review-layout-first` was added to the `github-pages`
+  environment's allowed deployment branches (Settings → Environments → github-pages).
+- The workflow was dispatched with this branch as the ref.
+
+**To put the full six-concept demo back:** re-run *Deploy to GitHub Pages* from
+`main` (Actions → Deploy to GitHub Pages → Run workflow → `main`). Any push to `main`
+does the same automatically. Then drop the branch policy above if you want to lock
+Pages back down to `main`.
 
 ## ✅ What to do instead
 

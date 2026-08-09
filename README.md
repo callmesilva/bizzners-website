@@ -4,7 +4,8 @@ Six full working takes on **bizzners.com** for Bizzners Business Builders (Panam
 all built from the 2024 brochure (`BizznersBasics.2024.pdf`). The landing page is a
 demo selector — send the client one link, let them wander.
 
-**Live demo:** https://callmesilva.github.io/bizzners-website/
+**Live demo:** https://callmesilva.github.io/bizzners-website/ — ⚠️ currently serving
+**this branch** (the client-review build), not `main`.
 
 > ⛔️ **This branch is `do-not-merge/client-review-layout-first`** — a one-off build
 > for a client meeting: B variants hidden, 03·A Wild hidden, motion off on the A
