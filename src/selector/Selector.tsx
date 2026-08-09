@@ -15,6 +15,10 @@ interface Concept {
   variantB: { to: string; name: string; blurb: string };
 }
 
+/**
+ * The selector is the client-facing page, so every string on it is Spanish —
+ * the demos themselves stay in English (see src/content/site.ts).
+ */
 const CONCEPTS: Concept[] = [
   {
     n: "01",
@@ -22,55 +26,55 @@ const CONCEPTS: Concept[] = [
     name: "Simple",
     accent: "#6c9bff",
     pitch:
-      "Quiet confidence. Typography, whitespace and the brand navy doing all the talking.",
-    tags: ["CSS-only motion", "Lightest load", "Minimal imagery"],
+      "Confianza serena. Tipografía, aire y el azul marino de la marca haciendo todo el trabajo.",
+    tags: ["Movimiento solo con CSS", "La carga más ligera", "Imágenes mínimas"],
     variantA: {
       to: "/simple",
-      name: "Quiet",
-      blurb: "Warm paper, airy editorial rhythm",
+      name: "Sereno",
+      blurb: "Papel cálido, ritmo editorial y aireado",
     },
     variantB: {
       to: "/simple-b",
-      name: "Swiss",
-      blurb: "Cool white, hairline grid, mono indexes",
+      name: "Suizo",
+      blurb: "Blanco frío, retícula fina, índices mono",
     },
   },
   {
     n: "02",
     key: "modern",
-    name: "Modern",
+    name: "Moderno",
     accent: "#7c93f5",
     pitch:
-      "2026 trends in two temperatures — serif editorial bento, or dark aurora glass.",
-    tags: ["Motion reveals", "Live cycle piece", "Mobile-tamed"],
+      "Tendencias 2026 en dos temperaturas — bento editorial con serifas, o cristal aurora en oscuro.",
+    tags: ["Revelados con movimiento", "Ciclo animado en vivo", "Domado para móvil"],
     variantA: {
       to: "/modern",
       name: "Editorial",
-      blurb: "Cream paper, serif moments, animated wheel",
+      blurb: "Papel crema, serifas, rueda animada",
     },
     variantB: {
       to: "/modern-b",
       name: "Aurora",
-      blurb: "Night glass, gradient ink, drifting light",
+      blurb: "Cristal nocturno, tinta degradada",
     },
   },
   {
     n: "03",
     key: "wild",
-    name: "Wild",
+    name: "Audaz",
     accent: "#ff5d6c",
     pitch:
-      "The showpieces. A WebGL trade globe — or a brutalist cargo manifest in motion.",
-    tags: ["GSAP scroll scenes", "Desktop showpiece", "Custom chrome"],
+      "Las piezas de exhibición. Un globo del comercio en WebGL — o un manifiesto de carga brutalista en movimiento.",
+    tags: ["Escenas de scroll con GSAP", "Vitrina de escritorio", "Interfaz a medida"],
     variantA: {
       to: "/wild",
-      name: "Command Center",
-      blurb: "three.js globe, pinned cycle, dark HUD",
+      name: "Centro de mando",
+      blurb: "Globo three.js, ciclo fijado, HUD oscuro",
     },
     variantB: {
       to: "/wild-b",
-      name: "Manifest",
-      blurb: "Cargo-paper brutalism, container train",
+      name: "Manifiesto",
+      blurb: "Papel de carga brutalista, contenedores",
     },
   },
 ];
@@ -125,16 +129,23 @@ const SHOWN = CONCEPTS.map((c) => ({
   ].filter((v) => isRouteVisible(v.to)),
 })).filter((c) => c.variants.length > 0);
 
-const COUNT_WORD = ["No", "One", "Two", "Three"];
-const COUNT_WORD_ES = ["Ningún", "Un", "Dos", "Tres", "Cuatro", "Cinco", "Seis"];
+/** masculine ("sitios") and feminine ("direcciones", "versiones") number words */
+const COUNT_M = ["Ningún", "Un", "Dos", "Tres", "Cuatro", "Cinco", "Seis"];
+const COUNT_F = ["Ninguna", "Una", "Dos", "Tres", "Cuatro", "Cinco", "Seis"];
 
 /** Headline second line: honest about how many takes are on the table. */
 function takesLine(counts: number[]) {
   const min = Math.min(...counts);
   const max = Math.max(...counts);
-  if (min !== max) return "A and B takes to compare.";
-  return max === 1 ? "One take on each." : `${COUNT_WORD[max]} takes on each.`;
+  if (min !== max) return "Versiones A y B para comparar.";
+  return max === 1
+    ? "Una versión de cada una."
+    : `${COUNT_F[max] ?? max} versiones de cada una.`;
 }
+
+/** Spanish rendering of site.legal — the demos keep the English original. */
+const LEGAL_ES =
+  "Bizzners y bizzners.com son marcas registradas de Bizzners Business Builders. Bizzners opera bajo las leyes de la República de Panamá.";
 
 export default function Selector() {
   const total = SHOWN.reduce((n, c) => n + c.variants.length, 0);
@@ -144,22 +155,21 @@ export default function Selector() {
     <div className="selector">
       <header className="sel-top">
         <Logo size={26} className="sel-logo" />
-        <span className="sel-top__chip">Concept review · 2026</span>
+        <span className="sel-top__chip">Revisión de conceptos · 2026</span>
       </header>
 
       <section className="sel-hero">
-        <p className="sel-kicker">{site.brand.domain} — redesign proposal</p>
+        <p className="sel-kicker">{site.brand.domain} — propuesta de rediseño</p>
         <h1 className="sel-title">
-          {COUNT_WORD[SHOWN.length] ?? SHOWN.length} direction
-          {SHOWN.length === 1 ? "" : "s"}.
+          {COUNT_F[SHOWN.length] ?? SHOWN.length}{" "}
+          {SHOWN.length === 1 ? "dirección." : "direcciones."}
           <br />
           {takesLine(SHOWN.map((c) => c.variants.length))}
         </h1>
-        {/* instructions for the client are in Spanish; the concepts stay in English */}
         <p className="sel-sub">
           {total === 1
             ? "Un sitio completo construido"
-            : `${COUNT_WORD_ES[total] ?? total} sitios completos construidos`}{" "}
+            : `${COUNT_M[total] ?? total} sitios completos construidos`}{" "}
           a partir del folleto 2024 — el mismo contenido en{" "}
           {total === 1 ? "él" : "todos"}, para que la comparación sea honesta.{" "}
           {total === 1 ? "Ábrelo, recórrelo" : "Ábrelos, recórrelos"} y dinos cuál se
@@ -176,7 +186,7 @@ export default function Selector() {
 
       <section
         className="sel-grid"
-        aria-label="Design concepts"
+        aria-label="Conceptos de diseño"
         style={{ "--cols": SHOWN.length } as React.CSSProperties}
       >
         {SHOWN.map((c, i) => (
@@ -193,7 +203,7 @@ export default function Selector() {
             <Link
               to={c.variants[0].to}
               className="sel-card__posterlink"
-              aria-label={`Open ${c.name} · ${c.variants[0].name}`}
+              aria-label={`Abrir ${c.name} · ${c.variants[0].name}`}
             >
               <Poster concept={c.key} />
             </Link>
@@ -245,7 +255,7 @@ export default function Selector() {
           comparación honesta. Las fotos son de relleno; los prompts para generarlas
           están en <code>PROMPTS.md</code>.
         </p>
-        <p className="sel-foot__legal">{site.legal}</p>
+        <p className="sel-foot__legal">{LEGAL_ES}</p>
       </footer>
     </div>
   );

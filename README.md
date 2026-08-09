@@ -8,7 +8,7 @@ demo selector — send the client one link, let them wander.
 
 > ⛔️ **This branch is `do-not-merge/client-review-layout-first`** — a one-off build
 > for a client meeting: B variants hidden, 03·A Wild hidden, motion off on the A
-> variants, selector instructions in Spanish. See [`DO-NOT-MERGE.md`](DO-NOT-MERGE.md)
+> variants, selector fully in Spanish. See [`DO-NOT-MERGE.md`](DO-NOT-MERGE.md)
 > before doing anything with it.
 
 ## Route map
@@ -49,8 +49,9 @@ Motion-off works the same way `prefers-reduced-motion` already did: `<Chrome>` s
 `useStill()` tells the JS timelines (Motion, GSAP, the globe, the reveal observer)
 to jump straight to their end state. Every timeline stays in the source.
 
-The selector's **instructions are in Spanish** for the client review; concept names,
-pitches and the demos themselves stay in English.
+The selector (`/`) is **fully in Spanish** for the client review — headline, concept
+names, pitches, tags, variant blurbs, footer and tab title. The six demos themselves
+stay in English (`src/content/site.ts` is unchanged).
 
 ## Run it
 

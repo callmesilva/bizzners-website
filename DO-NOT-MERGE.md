@@ -13,8 +13,8 @@ client looks at layout first. Merging it would:
 - 🙈 hide **03·A Wild** (the three.js command center) entirely
 - 🧊 freeze **all animation on the A variants** — reveals, parallax, marquees, the
   cycle wheel, the GSAP scroll scenes
-- 🇪🇸 switch the selector's instructions to Spanish (intentional here, a decision
-  we have not made for `main`)
+- 🇪🇸 switch the whole selector page to Spanish (intentional here, a decision we
+  have not made for `main`)
 
 Nothing is deleted — every concept and every timeline still ships. The state above
 is produced entirely by the flags in [`src/config/flags.ts`](src/config/flags.ts).
@@ -48,6 +48,6 @@ After the meeting, decide what the client actually wants and then either:
 | Motion parked, cycle wheel stops auto-advancing | `src/designs/modern/*` |
 | GSAP + globe use the shared still flag | `src/designs/wild/WildSite.tsx` |
 | Hidden concepts/variants drop out of the pill | `src/shared/DemoSwitch.tsx` |
-| Spanish instructions, flag-aware grid + copy | `src/selector/*` |
+| Selector fully in Spanish, flag-aware grid + copy | `src/selector/*` |
 
 ⛔️ **Reviewers: do not click merge.** ⛔️

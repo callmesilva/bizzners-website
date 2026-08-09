@@ -26,7 +26,8 @@ const WildSite = lazy(() => import("./designs/wild/WildSite"));
 const WildBSite = lazy(() => import("./designs/wildb/WildBSite"));
 
 const TITLES: Record<string, string> = {
-  "/": "Bizzners — Design Concepts",
+  // the selector is the client-facing page, so its tab title is Spanish too
+  "/": "Bizzners — Conceptos de diseño",
   "/simple": "Bizzners — 01·A Simple · Quiet",
   "/simple-b": "Bizzners — 01·B Simple · Swiss",
   "/modern": "Bizzners — 02·A Modern · Editorial",
