@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Logo } from "../brand/Logo";
+import { FLAGS, isRouteVisible } from "../config/flags";
 import { site } from "../content/site";
 import "./selector.css";
 
@@ -115,7 +116,30 @@ function Poster({ concept }: { concept: Concept["key"] }) {
   );
 }
 
+/** Feature flags decide which concepts and variants the client can reach. */
+const SHOWN = CONCEPTS.map((c) => ({
+  ...c,
+  variants: [
+    { ...c.variantA, badge: "A" },
+    { ...c.variantB, badge: "B" },
+  ].filter((v) => isRouteVisible(v.to)),
+})).filter((c) => c.variants.length > 0);
+
+const COUNT_WORD = ["No", "One", "Two", "Three"];
+const COUNT_WORD_ES = ["Ningún", "Un", "Dos", "Tres", "Cuatro", "Cinco", "Seis"];
+
+/** Headline second line: honest about how many takes are on the table. */
+function takesLine(counts: number[]) {
+  const min = Math.min(...counts);
+  const max = Math.max(...counts);
+  if (min !== max) return "A and B takes to compare.";
+  return max === 1 ? "One take on each." : `${COUNT_WORD[max]} takes on each.`;
+}
+
 export default function Selector() {
+  const total = SHOWN.reduce((n, c) => n + c.variants.length, 0);
+  const canFlipVariant = SHOWN.some((c) => c.variants.length > 1);
+
   return (
     <div className="selector">
       <header className="sel-top">
@@ -126,19 +150,36 @@ export default function Selector() {
       <section className="sel-hero">
         <p className="sel-kicker">{site.brand.domain} — redesign proposal</p>
         <h1 className="sel-title">
-          Three directions.
+          {COUNT_WORD[SHOWN.length] ?? SHOWN.length} direction
+          {SHOWN.length === 1 ? "" : "s"}.
           <br />
-          Two takes on each.
+          {takesLine(SHOWN.map((c) => c.variants.length))}
         </h1>
+        {/* instructions for the client are in Spanish; the concepts stay in English */}
         <p className="sel-sub">
-          Six full working sites built from the 2024 brochure — same content in every
-          one, so the comparison is honest. Explore them all and tell us which feels
-          like Bizzners.
+          {total === 1
+            ? "Un sitio completo construido"
+            : `${COUNT_WORD_ES[total] ?? total} sitios completos construidos`}{" "}
+          a partir del folleto 2024 — el mismo contenido en{" "}
+          {total === 1 ? "él" : "todos"}, para que la comparación sea honesta.{" "}
+          {total === 1 ? "Ábrelo, recórrelo" : "Ábrelos, recórrelos"} y dinos cuál se
+          siente como Bizzners.
         </p>
+        {!FLAGS.animationsA && (
+          <p className="sel-note">
+            <b>Nota de revisión:</b> las animaciones están desactivadas en esta versión
+            para que la conversación se centre primero en el layout. Las encendemos
+            después de la reunión.
+          </p>
+        )}
       </section>
 
-      <section className="sel-grid" aria-label="Design concepts">
-        {CONCEPTS.map((c, i) => (
+      <section
+        className="sel-grid"
+        aria-label="Design concepts"
+        style={{ "--cols": SHOWN.length } as React.CSSProperties}
+      >
+        {SHOWN.map((c, i) => (
           <article
             key={c.key}
             className={`sel-card sel-card--${c.key}`}
@@ -147,9 +188,13 @@ export default function Selector() {
             <div className="sel-card__head">
               <span className="sel-card__n">{c.n}</span>
               <span className="sel-card__name">{c.name}</span>
-              <kbd className="sel-card__kbd">{i + 1}</kbd>
+              <kbd className="sel-card__kbd">{c.n.replace(/^0/, "")}</kbd>
             </div>
-            <Link to={c.variantA.to} className="sel-card__posterlink" aria-label={`Open ${c.name} · variant A`}>
+            <Link
+              to={c.variants[0].to}
+              className="sel-card__posterlink"
+              aria-label={`Open ${c.name} · ${c.variants[0].name}`}
+            >
               <Poster concept={c.key} />
             </Link>
             <p className="sel-card__pitch">{c.pitch}</p>
@@ -159,9 +204,9 @@ export default function Selector() {
               ))}
             </ul>
             <div className="sel-card__variants">
-              {[c.variantA, c.variantB].map((v, vi) => (
+              {c.variants.map((v) => (
                 <Link key={v.to} to={v.to} className="sel-variant">
-                  <span className="sel-variant__badge">{vi === 0 ? "A" : "B"}</span>
+                  <span className="sel-variant__badge">{v.badge}</span>
                   <span className="sel-variant__meta">
                     <b>{v.name}</b>
                     <i>{v.blurb}</i>
@@ -179,13 +224,26 @@ export default function Selector() {
 
       <footer className="sel-foot">
         <p className="sel-foot__hint">
-          Press <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> to jump between concepts,{" "}
-          <kbd>B</kbd> to flip the A/B variant — <kbd>0</kbd> brings you back. A floating
-          switcher rides along on every demo.
+          Presiona{" "}
+          {SHOWN.map((c, i) => (
+            <span key={c.key}>
+              {i > 0 && " "}
+              <kbd>{c.n.replace(/^0/, "")}</kbd>
+            </span>
+          ))}{" "}
+          para saltar entre conceptos
+          {canFlipVariant && (
+            <>
+              , <kbd>B</kbd> para alternar la variante A/B
+            </>
+          )}{" "}
+          — <kbd>0</kbd> te trae de vuelta aquí. Un selector flotante te acompaña en cada
+          demo.
         </p>
         <p className="sel-foot__note">
-          Same copy, same structure in all six — an honest comparison. Photography is
-          placeholder; generation prompts ship in <code>PROMPTS.md</code>.
+          Mismo texto y misma estructura en {total === 1 ? "la maqueta" : "todas"} — una
+          comparación honesta. Las fotos son de relleno; los prompts para generarlas
+          están en <code>PROMPTS.md</code>.
         </p>
         <p className="sel-foot__legal">{site.legal}</p>
       </footer>

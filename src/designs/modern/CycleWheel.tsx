@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useInView, useReducedMotion } from "motion/react";
 import { site } from "../../content/site";
+import { useStill } from "../../shared/useStill";
 
 const SIZE = 420;
 const C = SIZE / 2;
@@ -21,16 +22,18 @@ export function CycleWheel() {
   const [step, setStep] = useState(0);
   const wrapRef = useRef<HTMLDivElement>(null);
   const inView = useInView(wrapRef, { amount: 0.35 });
-  const reduced = useReducedMotion();
+  const reduced = Boolean(useReducedMotion()) || useStill();
   const steps = site.cycle.steps;
 
+  // still mode keeps the wheel parked on step 01 — the list stays clickable,
+  // so the piece can still be walked through by hand in a review
   useEffect(() => {
-    if (!inView) return;
+    if (!inView || reduced) return;
     const id = window.setInterval(() => {
       setStep((s) => (s + 1) % steps.length);
     }, 2400);
     return () => window.clearInterval(id);
-  }, [inView, steps.length]);
+  }, [inView, reduced, steps.length]);
 
   const active = steps[step];
 

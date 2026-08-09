@@ -1,19 +1,23 @@
 import { Link } from "react-router-dom";
-
-const ITEMS = [
-  { base: "/simple", key: "1", name: "Simple" },
-  { base: "/modern", key: "2", name: "Modern" },
-  { base: "/wild", key: "3", name: "Wild" },
-];
+import {
+  VISIBLE_CONCEPTS,
+  baseOf,
+  canToggleVariant,
+  isRouteVisible,
+  isVariantB,
+  visibleVariants,
+} from "../config/flags";
 
 /**
  * Floating pill on every demo route: overview, jump between concepts
  * (variant-preserving), and an A/B toggle for the current concept.
+ * Parked concepts and parked variants drop out of the pill entirely.
  */
 export function DemoSwitch({ current }: { current: string }) {
-  const isB = current.endsWith("-b");
-  const base = current.replace(/-b$/, "");
+  const isB = isVariantB(current);
+  const base = baseOf(current);
   const variant = isB ? "-b" : "";
+  const showVariantToggle = canToggleVariant(base);
 
   return (
     <nav className="demo-switch" aria-label="Concept switcher">
@@ -27,24 +31,32 @@ export function DemoSwitch({ current }: { current: string }) {
         <span className="sr-only">All concepts</span>
       </Link>
       <span className="demo-switch__divider" aria-hidden="true" />
-      {ITEMS.map((item) => (
-        <Link
-          key={item.base}
-          to={`${item.base}${variant}`}
-          aria-current={base === item.base ? "true" : undefined}
-          title={`Concept 0${item.key} · ${item.name} — press ${item.key}`}
-        >
-          {item.key}
-        </Link>
-      ))}
-      <span className="demo-switch__divider" aria-hidden="true" />
-      <Link
-        to={isB ? base : `${base}-b`}
-        className="demo-switch__var"
-        title={`Switch to variant ${isB ? "A" : "B"} — press B`}
-      >
-        {isB ? "B" : "A"}
-      </Link>
+      {VISIBLE_CONCEPTS.map((item) => {
+        const keep = `${item.base}${variant}`;
+        const to = isRouteVisible(keep) ? keep : visibleVariants(item.base)[0];
+        return (
+          <Link
+            key={item.base}
+            to={to}
+            aria-current={base === item.base ? "true" : undefined}
+            title={`Concept 0${item.n} · ${item.name} — press ${item.n}`}
+          >
+            {item.n}
+          </Link>
+        );
+      })}
+      {showVariantToggle && (
+        <>
+          <span className="demo-switch__divider" aria-hidden="true" />
+          <Link
+            to={isB ? base : `${base}-b`}
+            className="demo-switch__var"
+            title={`Switch to variant ${isB ? "A" : "B"} — press B`}
+          >
+            {isB ? "B" : "A"}
+          </Link>
+        </>
+      )}
     </nav>
   );
 }

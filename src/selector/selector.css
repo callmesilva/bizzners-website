@@ -92,13 +92,34 @@
   animation: sel-in 0.7s 0.24s cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
 
+/* review note — Spanish, only while a flag parks something */
+.sel-note {
+  margin: 20px auto 0;
+  max-width: 62ch;
+  padding: 11px 16px;
+  border: 1px solid rgba(147, 161, 221, 0.28);
+  border-radius: 14px;
+  background: rgba(24, 30, 70, 0.5);
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: #b9c2ea;
+  animation: sel-in 0.7s 0.3s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.sel-note b {
+  color: var(--brand-blue-bright);
+  font-weight: 650;
+}
+
 /* ---------- concept grid ---------- */
 
+/* --cols comes from the selector component: however many concepts the feature
+   flags leave visible. Three keeps the original 1240px canvas exactly. */
 .sel-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr));
   gap: 20px;
-  max-width: 1240px;
+  max-width: min(1240px, calc(var(--cols, 3) * 400px + (var(--cols, 3) - 1) * 20px));
   margin: 0 auto;
   padding: clamp(40px, 7vh, 64px) clamp(20px, 4vw, 44px) 28px;
 }

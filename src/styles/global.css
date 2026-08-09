@@ -103,6 +103,25 @@ ol {
   }
 }
 
+/* Motion kill-switch — <Chrome> sets html[data-motion] per route, "off" when
+   FLAGS.animationsA parks motion on an A variant for a layout-first review.
+   Same trick as the reduced-motion block: keyframes and transitions stay in
+   the stylesheets, they just resolve instantly, so every surface renders its
+   resting state. Flip the flag back on and the choreography returns. */
+html[data-motion="off"] {
+  scroll-behavior: auto;
+}
+
+html[data-motion="off"] *,
+html[data-motion="off"] *::before,
+html[data-motion="off"] *::after {
+  animation-duration: 0.01ms !important;
+  animation-delay: 0s !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  transition-delay: 0s !important;
+}
+
 /* ============ Logo (HTML wordmark, sized via font-size) ============ */
 
 .bz-logo {

@@ -5,6 +5,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Logo } from "../../brand/Logo";
 import { site } from "../../content/site";
+import { useStill } from "../../shared/useStill";
 import { createGlobe } from "./globe";
 import "./wild.css";
 
@@ -43,10 +44,12 @@ export default function WildSite() {
   const cursorRingRef = useRef<HTMLDivElement>(null);
   const [loaderGone, setLoaderGone] = useState(false);
   const [loaderDone, setLoaderDone] = useState(false);
+  /* reduced motion, or motion parked by feature flag — same still treatment */
+  const still = useStill();
 
-  /* loader: brief boot sequence, skipped for reduced motion */
+  /* loader: brief boot sequence, skipped when still */
   useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    if (still) {
       setLoaderDone(true);
       setLoaderGone(true);
       return;
@@ -57,29 +60,25 @@ export default function WildSite() {
       window.clearTimeout(t1);
       window.clearTimeout(t2);
     };
-  }, []);
+  }, [still]);
 
   /* globe */
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const lite = window.matchMedia("(max-width: 860px)").matches;
     const handle = createGlobe(canvas, {
       quality: lite ? "lite" : "full",
-      animate: !reduced,
+      animate: !still,
     });
     return () => handle.destroy();
-  }, []);
+  }, [still]);
 
   /* custom cursor — fine pointers only */
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
-    if (
-      !window.matchMedia("(pointer: fine)").matches ||
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    ) {
+    if (!window.matchMedia("(pointer: fine)").matches || still) {
       return;
     }
     root.classList.add("w-cursor-on");
@@ -118,16 +117,15 @@ export default function WildSite() {
       cancelAnimationFrame(raf);
       root.classList.remove("w-cursor-on");
     };
-  }, []);
+  }, [still]);
 
   /* GSAP choreography */
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     const ctx = gsap.context(() => {
-      if (reduced) {
+      if (still) {
         gsap.set(
           "[data-wr], .w-line > span, [data-gw], .w-ch, .w-card, .w-row, .w-hud__item",
           { opacity: 1, clearProps: "transform,clipPath" },
@@ -314,7 +312,7 @@ export default function WildSite() {
     }, root);
 
     return () => ctx.revert();
-  }, []);
+  }, [still]);
 
   return (
     <div className="d-wild" ref={rootRef}>

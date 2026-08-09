@@ -7,6 +7,7 @@ import { Logo } from "../../brand/Logo";
 import { Placeholder } from "../../shared/Placeholder";
 import { site } from "../../content/site";
 import { useMedia } from "../../shared/useMedia";
+import { useStill } from "../../shared/useStill";
 import { CycleWheel } from "./CycleWheel";
 import "./modern.css";
 
@@ -42,9 +43,11 @@ function Words({ text, accent, base = 0 }: { text: string; accent?: string; base
 }
 
 export default function ModernSite() {
-  const reduced = useReducedMotion();
+  // "reduced" now also covers motion parked by feature flag — every timeline
+  // below stays in place, it just renders its end state immediately
+  const reduced = Boolean(useReducedMotion()) || useStill();
   const compact = useMedia("(max-width: 820px)");
-  const still = Boolean(reduced) || compact;
+  const still = reduced || compact;
 
   const heroRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
