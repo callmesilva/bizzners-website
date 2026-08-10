@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import {
+  FLAGS,
   VISIBLE_CONCEPTS,
   baseOf,
   canToggleVariant,
@@ -7,11 +8,13 @@ import {
   isVariantB,
   visibleVariants,
 } from "../config/flags";
+import { TypeCycler } from "./TypeSwitch";
 
 /**
  * Floating pill on every demo route: overview, jump between concepts
- * (variant-preserving), and an A/B toggle for the current concept.
- * Parked concepts and parked variants drop out of the pill entirely.
+ * (variant-preserving), an A/B toggle for the current concept and the
+ * font-pairing cycler. Parked concepts, parked variants and a parked
+ * typography switcher all drop out of the pill entirely.
  */
 export function DemoSwitch({ current }: { current: string }) {
   const isB = isVariantB(current);
@@ -55,6 +58,12 @@ export function DemoSwitch({ current }: { current: string }) {
           >
             {isB ? "B" : "A"}
           </Link>
+        </>
+      )}
+      {FLAGS.showTypeSets && (
+        <>
+          <span className="demo-switch__divider" aria-hidden="true" />
+          <TypeCycler />
         </>
       )}
     </nav>

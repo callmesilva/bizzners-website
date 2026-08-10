@@ -9,11 +9,13 @@ import {
 } from "react-router-dom";
 import {
   CONCEPTS,
+  FLAGS,
   canToggleVariant,
   isRouteVisible,
   isVariantB,
   visibleVariants,
 } from "./config/flags";
+import { cycleTypeSet } from "./config/typography";
 import { DemoSwitch } from "./shared/DemoSwitch";
 import { isStill } from "./shared/useStill";
 
@@ -82,6 +84,8 @@ function Chrome() {
         if (canToggleVariant(base)) {
           navigate(isVariantB(pathname) ? base : `${base}-b`);
         }
+      } else if (event.key === "t" || event.key === "T") {
+        if (FLAGS.showTypeSets) cycleTypeSet();
       } else if (event.key === "0" || event.key === "Escape") navigate("/");
     };
     window.addEventListener("keydown", onKey);

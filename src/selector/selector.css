@@ -111,6 +111,144 @@
   font-weight: 650;
 }
 
+/* ---------- typography switcher ---------- */
+
+/* Each chip previews its own pairing, whichever set is active — the page
+   itself is the real preview, so the chips only need to name the faces. */
+.sel-type {
+  margin: 26px auto 0;
+  max-width: 62ch;
+  padding: 16px 18px 15px;
+  border: 1px solid rgba(147, 161, 221, 0.24);
+  border-radius: 18px;
+  background: rgba(18, 23, 56, 0.55);
+  animation: sel-in 0.7s 0.36s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.sel-type__label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #93a1dd;
+}
+
+.sel-type__chips {
+  display: grid;
+  /* four sets, so two tidy rows rather than a three-plus-orphan */
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.sel-type__chip {
+  display: grid;
+  gap: 3px;
+  padding: 10px 12px;
+  text-align: left;
+  border-radius: 12px;
+  border: 1px solid rgba(130, 150, 230, 0.22);
+  background: rgba(10, 14, 35, 0.5);
+  color: #c6cdf1;
+  cursor: pointer;
+  transition:
+    border-color 0.22s ease,
+    background 0.22s ease,
+    transform 0.22s ease;
+}
+
+.sel-type__chip:hover {
+  transform: translateY(-2px);
+  border-color: rgba(160, 180, 255, 0.5);
+  background: rgba(24, 30, 70, 0.7);
+}
+
+.sel-type__chip[aria-pressed="true"] {
+  border-color: var(--brand-blue-bright);
+  background: rgba(74, 127, 224, 0.18);
+  color: #fff;
+}
+
+.sel-type__chip b {
+  font-size: 1.05rem;
+  font-weight: 650;
+  line-height: 1.15;
+}
+
+.sel-type__chip i {
+  font-size: 0.74rem;
+  font-style: normal;
+  line-height: 1.3;
+  color: #96a1d6;
+}
+
+.sel-type__chip[aria-pressed="true"] i {
+  color: #c3cffb;
+}
+
+/* the preview: every chip wears the faces it is offering, so the row stays
+   put while the page around it changes */
+.sel-type__chip[data-set="original"] b,
+.sel-type__chip[data-set="original"] i {
+  font-family: "Archivo Variable", "Archivo", system-ui, sans-serif;
+}
+
+.sel-type__chip[data-set="editorial"] b {
+  font-family: var(--fs-editorial-display);
+}
+
+.sel-type__chip[data-set="editorial"] i {
+  font-family: var(--fs-editorial-body);
+}
+
+.sel-type__chip[data-set="technical"] b {
+  font-family: var(--fs-technical-display);
+}
+
+.sel-type__chip[data-set="technical"] i {
+  font-family: var(--fs-technical-body);
+}
+
+.sel-type__chip[data-set="friendly"] b {
+  font-family: var(--fs-friendly-display);
+}
+
+.sel-type__chip[data-set="friendly"] i {
+  font-family: var(--fs-friendly-body);
+}
+
+.sel-type__chip[data-set="bold"] b {
+  font-family: var(--fs-bold-display);
+}
+
+.sel-type__chip[data-set="bold"] i {
+  font-family: var(--fs-bold-body);
+}
+
+/* an odd number of sets would leave the last chip alone in its row — let it
+   take the full width instead */
+.sel-type__chip:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
+
+.sel-type__blurb {
+  margin-top: 12px;
+  font-size: 0.85rem;
+  line-height: 1.55;
+  color: #aab4e4;
+}
+
+.sel-type__blurb kbd {
+  font-family: var(--font-ui);
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #cdd6ff;
+  border: 1px solid rgba(160, 175, 245, 0.4);
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  padding: 1px 5px;
+}
+
 /* ---------- concept grid ---------- */
 
 /* --cols comes from the selector component: however many concepts the feature

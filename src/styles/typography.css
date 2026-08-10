@@ -1,0 +1,177 @@
+/* ================================================================
+   Typography sets — three alternative font pairings for the client
+   review, plus "original" (each concept keeps its own type).
+
+   How it works: every concept already routes its type through its own
+   CSS variables (--m-serif, --w-display, --sb-plexmono …). A set only
+   defines three roles — display / body / mono — and the remap block at
+   the bottom points each concept's variables at those roles. So one
+   attribute on <html> re-types all six demos, and "original" simply
+   remaps nothing.
+
+   Set here, read by src/config/typography.ts.
+   ================================================================ */
+
+:root {
+  /* the pairings themselves — also used by the selector chips, which
+     preview each set in its own faces whatever is currently active */
+  --fs-editorial-display: "Fraunces Variable", "Fraunces", Georgia, serif;
+  --fs-editorial-body: "Manrope Variable", "Manrope", system-ui, sans-serif;
+  --fs-editorial-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+
+  --fs-technical-display: "Space Grotesk Variable", "Space Grotesk", system-ui, sans-serif;
+  --fs-technical-body: "Plus Jakarta Sans Variable", "Plus Jakarta Sans", system-ui, sans-serif;
+  --fs-technical-mono: "JetBrains Mono Variable", ui-monospace, Menlo, monospace;
+
+  --fs-friendly-display: "Baloo 2 Variable", "Baloo 2", ui-rounded, system-ui, sans-serif;
+  --fs-friendly-body: "Figtree Variable", "Figtree", system-ui, sans-serif;
+  --fs-friendly-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+
+  --fs-bold-display: "Fredoka Variable", "Fredoka", ui-rounded, system-ui, sans-serif;
+  --fs-bold-body: "Nunito Variable", "Nunito", system-ui, sans-serif;
+  --fs-bold-mono: "Martian Mono Variable", "Martian Mono", ui-monospace, monospace;
+}
+
+html[data-fonts="editorial"] {
+  --fs-display: var(--fs-editorial-display);
+  --fs-body: var(--fs-editorial-body);
+  --fs-mono: var(--fs-editorial-mono);
+}
+
+html[data-fonts="technical"] {
+  --fs-display: var(--fs-technical-display);
+  --fs-body: var(--fs-technical-body);
+  --fs-mono: var(--fs-technical-mono);
+}
+
+html[data-fonts="friendly"] {
+  --fs-display: var(--fs-friendly-display);
+  --fs-body: var(--fs-friendly-body);
+  --fs-mono: var(--fs-friendly-mono);
+}
+
+html[data-fonts="bold"] {
+  --fs-display: var(--fs-bold-display);
+  --fs-body: var(--fs-bold-body);
+  --fs-mono: var(--fs-bold-mono);
+}
+
+/* ---------- remap: shell + selector ---------- */
+
+/* The wordmark keeps --font-logo in every set: the logo is not up for
+   debate here, only the site type around it. */
+html[data-fonts]:not([data-fonts="original"]) {
+  --font-ui: var(--fs-body);
+}
+
+html[data-fonts]:not([data-fonts="original"]) .sel-title,
+html[data-fonts]:not([data-fonts="original"]) .sel-card__name {
+  font-family: var(--fs-display);
+}
+
+/* ---------- remap: the six concepts ---------- */
+
+/* 01·A Quiet — headings inherited the UI face, so they need naming */
+html[data-fonts]:not([data-fonts="original"]) .d-simple :is(h1, h2, h3) {
+  font-family: var(--fs-display);
+}
+
+/* 01·B Swiss */
+html[data-fonts]:not([data-fonts="original"]) .d-simpleb {
+  --sb-grotesk: var(--fs-body);
+  --sb-plexmono: var(--fs-mono);
+}
+
+html[data-fonts]:not([data-fonts="original"]) .d-simpleb :is(h1, h2, h3) {
+  font-family: var(--fs-display);
+}
+
+/* 02·A Editorial */
+html[data-fonts]:not([data-fonts="original"]) .d-modern {
+  --m-serif: var(--fs-display);
+  --m-sans: var(--fs-body);
+}
+
+/* 02·B Aurora */
+html[data-fonts]:not([data-fonts="original"]) .d-modernb {
+  --mb-display: var(--fs-display);
+  --mb-body: var(--fs-body);
+}
+
+/* 03·A Command Center */
+html[data-fonts]:not([data-fonts="original"]) .d-wild {
+  --w-display: var(--fs-display);
+  --w-body: var(--fs-body);
+  --w-mono: var(--fs-mono);
+}
+
+/* 03·B Manifest — the paperwork face carries body *and* mono here */
+html[data-fonts]:not([data-fonts="original"]) .d-wildb {
+  --wb-anton: var(--fs-display);
+  --wb-martian: var(--fs-mono);
+}
+
+/* ---------- per-set repairs ---------- */
+
+/* 02·A leans on italic in seven places, all of them on its display face.
+   Fraunces ships a real italic; Space Grotesk, Baloo 2 and Fredoka do not, so
+   under those three sets the accents stay upright rather than wear a slant the
+   browser faked — colour and weight already mark every one of them. */
+:is(
+    html[data-fonts="technical"],
+    html[data-fonts="friendly"],
+    html[data-fonts="bold"]
+  )
+  .d-modern
+  :is(
+    em,
+    .m-cell__n,
+    .m-cycle__list button.is-active .m-cycle__name,
+    .m-chain__l2,
+    .m-tools__n,
+    .m-end__cta,
+    .m-end__note
+  ) {
+  font-style: normal;
+}
+
+/* Instrument Serif (02·A) and Anton (03·B) each ship a single weight, so those
+   designs ask for 400 wherever their display face appears. Fredoka at 400 is
+   not what the chunky set is for — its display moments get real weight. Every
+   other concept already sets 650–750 on its headlines, so they need nothing. */
+html[data-fonts="bold"]
+  .d-modern
+  :is(
+    h1,
+    h2,
+    h3,
+    em,
+    .m-cell__n,
+    .m-tools__n,
+    .m-wheel__big,
+    .m-cycle__num,
+    .m-chain__l1,
+    .m-chain__l2,
+    .m-about__mark
+  ),
+html[data-fonts="bold"] .d-wildb :is(h1, h2, h3) {
+  font-weight: 600;
+}
+
+/* Anton is condensed uppercase and 03·B's poster sizes are cut to its width.
+   Every replacement display face is wider, so the headlines come down a step
+   (the hero line is clipped by .wb-hero__mask otherwise) and get their
+   tracking back to breathe. */
+html[data-fonts]:not([data-fonts="original"]) .d-wildb :is(.wb-h2, .wb-hero__title) {
+  letter-spacing: -0.015em;
+}
+
+html[data-fonts]:not([data-fonts="original"]) .d-wildb .wb-hero__title {
+  font-size: clamp(2.5rem, 7.2vw, 6.4rem);
+  line-height: 1.04;
+}
+
+html[data-fonts]:not([data-fonts="original"]) .d-wildb .wb-h2 {
+  font-size: clamp(1.9rem, 4.2vw, 3.1rem);
+  line-height: 1.08;
+}

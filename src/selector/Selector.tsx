@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Logo } from "../brand/Logo";
 import { FLAGS, isRouteVisible } from "../config/flags";
 import { site } from "../content/site";
+import { TypePicker } from "../shared/TypeSwitch";
 import "./selector.css";
 
 interface Concept {
@@ -182,6 +183,7 @@ export default function Selector() {
             después de la reunión.
           </p>
         )}
+        <TypePicker />
       </section>
 
       <section
@@ -245,6 +247,11 @@ export default function Selector() {
           {canFlipVariant && (
             <>
               , <kbd>B</kbd> para alternar la variante A/B
+            </>
+          )}
+          {FLAGS.showTypeSets && (
+            <>
+              , <kbd>T</kbd> para cambiar la tipografía
             </>
           )}{" "}
           — <kbd>0</kbd> te trae de vuelta aquí. Un selector flotante te acompaña en cada

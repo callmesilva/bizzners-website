@@ -324,3 +324,53 @@ html[data-motion="off"] *::after {
   background: rgba(108, 155, 255, 0.3);
   color: #fff;
 }
+
+/* font-pairing cycler — shows the active set so the client always knows
+   which typography they are looking at */
+.demo-switch__type {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  height: 32px;
+  padding: 0 12px 0 9px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(235, 240, 255, 0.78);
+  cursor: pointer;
+  transition:
+    background 0.18s ease,
+    color 0.18s ease,
+    transform 0.18s ease;
+}
+
+.demo-switch__type:hover {
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.demo-switch__type-aa {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.demo-switch__type-name {
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+/* tight screens: the pill keeps the glyph, drops the label */
+@media (max-width: 560px) {
+  .demo-switch__type {
+    padding: 0 10px;
+  }
+
+  .demo-switch__type-name {
+    display: none;
+  }
+}

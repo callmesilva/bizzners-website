@@ -25,9 +25,9 @@ demo selector — send the client one link, let them wander.
 | `/wild-b` | 03·B Manifest | cargo-paper brutalism, container train, stamps | GSAP | hidden |
 
 Navigation sugar: press **1 / 2 / 3** to jump concepts, **B** to flip the A/B variant,
-**0** to return to the selector. A floating pill rides along on every demo. Hidden
-routes (see flags below) bounce back to the selector and drop out of both the pill
-and the keyboard shortcuts.
+**T** to cycle the typography set, **0** to return to the selector. A floating pill
+rides along on every demo. Hidden routes (see flags below) bounce back to the selector
+and drop out of both the pill and the keyboard shortcuts.
 
 ## Feature flags
 
@@ -39,6 +39,7 @@ a flag only parks a concept, a variant or the motion. Defaults on this branch:
 | `showVariantB` | `false` | `VITE_SHOW_VARIANT_B` | 01·B / 02·B / 03·B hidden; A/B toggle disappears |
 | `showWildA` | `false` | `VITE_SHOW_WILD_A` | `/wild` hidden (03·B still governed by `showVariantB`) |
 | `animationsA` | `false` | `VITE_ANIMATIONS_A` | A variants render their resting state: reveals instant, parallax flat, marquees parked, cycle wheel manual, GSAP scenes set instead of played |
+| `showTypeSets` | `true` | `VITE_SHOW_TYPE_SETS` | typography switcher hidden everywhere; every concept keeps its own type |
 
 ```bash
 # everything back on, no code edit
@@ -53,6 +54,43 @@ to jump straight to their end state. Every timeline stays in the source.
 The selector (`/`) is **fully in Spanish** for the client review — headline, concept
 names, pitches, tags, variant blurbs, footer and tab title. The six demos themselves
 stay in English (`src/content/site.ts` is unchanged).
+
+## Typography sets
+
+The client asked to see the same designs in a different type voice, so there are four
+alternative pairings on top of the original. A set is a triple of roles — display /
+body / mono — and `src/styles/typography.css` points every concept's own font tokens
+(`--m-serif`, `--w-display`, `--sb-plexmono` …) at those roles. One attribute on
+`<html>` therefore re-types all six demos at once, and the comparison stays honest:
+same layout, same copy, only the letters change.
+
+| Set | `data-fonts` | Display + body | Reads as |
+| --- | --- | --- | --- |
+| Original | `original` | each concept's own type | as designed — remaps nothing |
+| Editorial | `editorial` | Fraunces + Manrope (IBM Plex Mono) | institutional, high-contrast, publication authority |
+| Técnica | `technical` | Space Grotesk + Plus Jakarta Sans (JetBrains Mono) | product, precision, tech platform |
+| Cercana | `friendly` | Baloo 2 + Figtree (IBM Plex Mono) | warm and accessible — Baloo 2 is the wordmark's own face |
+| Rotunda | `bold` | Fredoka + Nunito (Martian Mono) | the chunky read of the logo: round, wide, heavy — brand you spot across the room |
+
+Three ways to switch: the chip row on the selector, the `Aa` button in the floating
+pill, or the **T** key. The choice is remembered in `localStorage` and follows the
+client from demo to demo. It can also be pinned in a link — handy for sending the
+client one direction to look at:
+
+```
+https://callmesilva.github.io/bizzners-website/?fonts=editorial
+```
+
+The wordmark keeps `--font-logo` (Baloo 2) in every set: only the site type around it
+is on the table. Definitions live in `src/config/typography.ts`, the remap in
+`src/styles/typography.css`, the UI in `src/shared/TypeSwitch.tsx`.
+
+Two concepts need a repair under the alternative sets, both at the bottom of
+`typography.css`: Instrument Serif (02·A) and Anton (03·B) ship a single weight and no
+italic, so those designs ask for `400` and `italic` wherever their display face lands —
+which is meaningless in a face that has neither. Rotunda gives 02·A/03·B real weight,
+and the faux-italic sets keep 02·A's accents upright. 03·B's poster sizes also step
+down, since they were cut to Anton's condensed width.
 
 ## Run it
 
@@ -75,7 +113,9 @@ Node ≥ 22 and pnpm (see `packageManager`). Override the port with `make dev PO
   Added microcopy is flagged in [`COPY-NOTES.md`](COPY-NOTES.md).
 - **Route-level code splitting** — each design is a `React.lazy` chunk; three.js and
   GSAP load only on the Wild routes, Motion only on the Modern routes. Fonts are
-  self-hosted via Fontsource and imported inside each design's chunk.
+  self-hosted via Fontsource and imported inside each design's chunk — the alternative
+  pairings sit in the entry chunk as `@font-face` rules, so their woff2 files only
+  download once a set is actually picked.
 - **Placeholders over fake photos** — image slots render a branded `Placeholder`
   component; paste-ready generation prompts live in [`PROMPTS.md`](PROMPTS.md).
 - **Accessibility floor** — semantic sections, `prefers-reduced-motion` respected on
@@ -89,6 +129,7 @@ Node ≥ 22 and pnpm (see `packageManager`). Override the port with `make dev PO
 ```
 src/
   config/flags.ts        ← what the client can reach right now
+  config/typography.ts   ← the four font pairings + the active-set store
   content/site.ts        ← the single source of copy
   selector/              ← the "/" concept-picker page
   designs/
@@ -96,7 +137,8 @@ src/
     modern/  modernb/    ← concept 02, variants A/B
     wild/    wildb/      ← concept 03, variants A/B  (wild/globe.ts = three.js scene)
   brand/Logo.tsx         ← recreated bizzners® wordmark (HTML/CSS, Baloo 2)
-  shared/                ← Placeholder, DemoSwitch pill, reveal + media + still hooks
+  shared/                ← Placeholder, DemoSwitch pill, TypeSwitch, reveal/media/still hooks
+  styles/typography.css  ← maps each concept's font tokens onto the active set
 DO-NOT-MERGE.md          ← why this branch stays off main
 PROMPTS.md               ← image-LLM prompts per placeholder slot
 COPY-NOTES.md            ← translation + added-microcopy log for client review

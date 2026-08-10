@@ -15,6 +15,8 @@ client looks at layout first. Merging it would:
   cycle wheel, the GSAP scroll scenes
 - 🇪🇸 switch the whole selector page to Spanish (intentional here, a decision we
   have not made for `main`)
+- 🔤 add four **alternative font pairings** and a switcher on top of the designed
+  typography — a question for the client, not an answer we have agreed on
 
 Nothing is deleted — every concept and every timeline still ships. The state above
 is produced entirely by the flags in [`src/config/flags.ts`](src/config/flags.ts).
@@ -56,5 +58,9 @@ After the meeting, decide what the client actually wants and then either:
 | GSAP + globe use the shared still flag | `src/designs/wild/WildSite.tsx` |
 | Hidden concepts/variants drop out of the pill | `src/shared/DemoSwitch.tsx` |
 | Selector fully in Spanish, flag-aware grid + copy | `src/selector/*` |
+| Four alternative font pairings + active-set store | `src/config/typography.ts` (new) |
+| Font-token remap per set | `src/styles/typography.css` (new) |
+| Typography switcher (pill cycler + selector chips, `T` key) | `src/shared/TypeSwitch.tsx` (new), `src/App.tsx` |
+| Seven extra Fontsource packages for those pairings | `package.json`, `src/main.tsx` |
 
 ⛔️ **Reviewers: do not click merge.** ⛔️

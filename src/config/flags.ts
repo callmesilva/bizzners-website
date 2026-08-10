@@ -12,6 +12,7 @@
  *   · only the A variant of each concept is reachable
  *   · 03·A Wild is parked
  *   · motion on the A variants is off, so the client reads layout first
+ *   · the three alternative font pairings are on the table (see config/typography)
  */
 
 /** `undefined`/empty → the committed default; otherwise "true"/"1" wins. */
@@ -27,6 +28,8 @@ export const FLAGS = {
   showWildA: envFlag(import.meta.env.VITE_SHOW_WILD_A, false),
   /** Motion on the A variants. Off ⇒ reveals, parallax and loops resolve instantly. */
   animationsA: envFlag(import.meta.env.VITE_ANIMATIONS_A, false),
+  /** Alternative font pairings + the switcher. Off ⇒ every concept keeps its own type. */
+  showTypeSets: envFlag(import.meta.env.VITE_SHOW_TYPE_SETS, true),
 } as const;
 
 export type ConceptKey = "simple" | "modern" | "wild";
