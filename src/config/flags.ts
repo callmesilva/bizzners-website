@@ -1,18 +1,17 @@
 /**
- * Demo feature flags — the switches we flip around client meetings.
+ * Demo feature flags — left over from the concept review, now mostly settled.
  *
- * Nothing is ever deleted: every concept, variant and animation still ships in
- * the bundle. A flag only decides what the client can reach right now, so a
- * direction can come back by flipping one boolean (or one env var at build /
- * dev time, when we don't want to touch the committed defaults):
+ * The client picked **02·A Modern with the "Cercana" pairing (Baloo 2 +
+ * Figtree)**, so this branch serves that one design at `/` and nothing else:
+ * no selector, no A/B toggle, no font switcher. See `src/App.tsx`.
  *
- *   VITE_SHOW_VARIANT_B=true VITE_ANIMATIONS_A=true pnpm dev
+ * Nothing is deleted, though — every other concept and every timeline is still
+ * in `src/designs`, it just has no route pointing at it. These flags survive
+ * because those files still import them; they are no longer a client-facing
+ * control surface. To look at a parked direction again, add its route back in
+ * `App.tsx` (an env var alone will not do it any more):
  *
- * Committed defaults = the "layout-first review" setup:
- *   · only the A variant of each concept is reachable
- *   · 03·A Wild is parked
- *   · motion on the A variants is off, so the client reads layout first
- *   · the three alternative font pairings are on the table (see config/typography)
+ *   VITE_SHOW_VARIANT_B=true pnpm dev
  */
 
 /** `undefined`/empty → the committed default; otherwise "true"/"1" wins. */
@@ -26,10 +25,15 @@ export const FLAGS = {
   showVariantB: envFlag(import.meta.env.VITE_SHOW_VARIANT_B, false),
   /** 03·A Wild — the three.js command center. Parked until after the review. */
   showWildA: envFlag(import.meta.env.VITE_SHOW_WILD_A, false),
-  /** Motion on the A variants. Off ⇒ reveals, parallax and loops resolve instantly. */
-  animationsA: envFlag(import.meta.env.VITE_ANIMATIONS_A, false),
-  /** Alternative font pairings + the switcher. Off ⇒ every concept keeps its own type. */
-  showTypeSets: envFlag(import.meta.env.VITE_SHOW_TYPE_SETS, true),
+  /**
+   * Motion on the A-variant *demo routes*. On ⇒ reveals, parallax and loops
+   * play as designed. Note this no longer reaches the live site: `useStill`
+   * only consults it for paths in DEMO_ROUTES, and `/` is not one, so the
+   * site animates unless the visitor asks for reduced motion.
+   */
+  animationsA: envFlag(import.meta.env.VITE_ANIMATIONS_A, true),
+  /** The font-pairing *switcher*. Off ⇒ the type is fixed (see config/typography). */
+  showTypeSets: envFlag(import.meta.env.VITE_SHOW_TYPE_SETS, false),
 } as const;
 
 export type ConceptKey = "simple" | "modern" | "wild";

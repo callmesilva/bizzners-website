@@ -2,17 +2,19 @@ import { useSyncExternalStore } from "react";
 import { FLAGS } from "./flags";
 
 /**
- * Typography sets — the client asked to see the same designs in a different
- * type voice, so here are three complete pairings on top of the original.
+ * Typography sets — the pairings we put in front of the client.
+ *
+ * **Settled: "Cercana" (Baloo 2 + Figtree) won.** It is `DEFAULT_TYPE_SET`, and
+ * with `FLAGS.showTypeSets` off it is the only set that can ever be applied —
+ * the switcher is gone, and neither `?fonts=` nor a stale localStorage entry
+ * can move it. The other pairings stay here as the record of what was compared.
  *
  * A set is a triple of roles (display / body / mono). `styles/typography.css`
- * remaps every concept's own font tokens onto those roles, so switching a set
- * re-types all six demos at once and the comparison stays honest: same layout,
- * same copy, only the letters change. "original" remaps nothing — each concept
- * keeps the type it was designed with.
+ * remaps each concept's own font tokens onto those roles, so a set re-types the
+ * design without touching its layout or copy. "original" remaps nothing — that
+ * is each concept wearing the type it was first drawn with.
  *
- * The choice lives on `html[data-fonts]`, survives navigation (localStorage)
- * and can be pinned in a link for the client: `?fonts=editorial`.
+ * The active set lives on `html[data-fonts]`, written before the first paint.
  */
 
 export type TypeSetKey =
@@ -70,7 +72,8 @@ export const TYPE_SETS: TypeSet[] = [
   },
 ];
 
-export const DEFAULT_TYPE_SET: TypeSetKey = "original";
+/** The client's pick. Also the locked value while `FLAGS.showTypeSets` is off. */
+export const DEFAULT_TYPE_SET: TypeSetKey = "friendly";
 
 const STORAGE_KEY = "bizzners:fonts";
 const URL_PARAM = "fonts";
