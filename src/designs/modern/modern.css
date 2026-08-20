@@ -268,36 +268,26 @@
   height: 100%;
   object-fit: cover;
   object-position: center 45%;
-  /* footage is cool and contrasty; pull it toward the paper palette */
-  filter: saturate(0.7) contrast(1.03) brightness(1.05);
+  /* only a whisper of grading so it still sits with the paper palette */
+  filter: saturate(0.9) contrast(1.05);
   /* headroom, so the parallax drift never exposes an edge */
   scale: 1.1;
 }
 
-/* The veil that keeps ink-on-cream readable over moving footage: near-opaque
-   under the copy column, thinning to the right where the chips float over
-   open frame, and closing to solid cream at the bottom so the section hands
-   off to the marquee without a seam. Vertical layer is listed first — it
-   paints on top, so the bottom fade always wins. */
+/* No wash over the footage — the client wants the video to read. All that is
+   left is the bottom hand-off into the marquee, so the section boundary is a
+   fade rather than a hard cut. Legibility is handled on the type instead
+   (see .m-hero__title / .m-hero__stand), which costs the video nothing. */
 .m-hero__bg::after {
   content: "";
   position: absolute;
   inset: 0;
-  background:
-    linear-gradient(
-      to bottom,
-      rgba(245, 241, 230, 0.5) 0%,
-      rgba(245, 241, 230, 0) 20%,
-      rgba(245, 241, 230, 0) 58%,
-      var(--m-cream) 100%
-    ),
-    linear-gradient(
-      96deg,
-      rgba(245, 241, 230, 0.97) 0%,
-      rgba(245, 241, 230, 0.94) 38%,
-      rgba(245, 241, 230, 0.72) 62%,
-      rgba(245, 241, 230, 0.44) 100%
-    );
+  background: linear-gradient(
+    to bottom,
+    rgba(245, 241, 230, 0) 60%,
+    rgba(245, 241, 230, 0.7) 86%,
+    var(--m-cream) 100%
+  );
 }
 
 /* both columns ride above the backdrop */
@@ -305,6 +295,18 @@
 .m-hero__media {
   position: relative;
   z-index: 1;
+}
+
+/* With the veil gone the copy sits straight on moving footage, so each glyph
+   carries its own contrast. A tight cream halo tracks the letterforms and
+   leaves the picture between them untouched — unlike a scrim, which dims the
+   whole frame to protect a few hundred pixels of text. */
+.m-hero__title,
+.m-hero__cta .m-textlink {
+  text-shadow:
+    0 1px 1px rgba(245, 241, 230, 0.92),
+    0 0 14px rgba(245, 241, 230, 0.85),
+    0 0 34px rgba(245, 241, 230, 0.6);
 }
 
 .m-hero__title {
@@ -317,16 +319,29 @@
   max-width: 13ch;
 }
 
+/* The headline is big enough that the halo alone carries it, but the
+   standfirst is small, light-weight ink-soft and sat unreadable over the
+   darker shots (the canal lock especially). It gets the nav's glass — same
+   blur, same tint, same hairline — so it reads as part of the existing
+   chrome rather than a patch, and the footage still shows through it. */
 .m-hero__stand {
   margin-top: 24px;
   max-width: 52ch;
+  width: fit-content;
   font-size: 1.1rem;
   line-height: 1.7;
   color: var(--m-ink-soft);
+  padding: 16px 22px;
+  border-radius: 20px;
+  background: rgba(250, 247, 238, 0.72);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  backdrop-filter: blur(16px) saturate(1.4);
+  border: 1px solid rgba(21, 28, 73, 0.1);
+  box-shadow: 0 14px 40px rgba(21, 28, 73, 0.1);
 }
 
 .m-hero__cta {
-  margin-top: 34px;
+  margin-top: 30px;
   display: flex;
   align-items: center;
   gap: 26px;
@@ -1027,15 +1042,14 @@
     aspect-ratio: 4 / 3;
   }
 
-  /* copy sits *over* the footage instead of next to it, so the veil has to
-     run top-to-bottom: heavy behind the headline, thin over the chips. */
+  /* Stacked, so the copy sits fully over the footage and the halo is doing
+     all the work. Only the bottom hand-off remains, pulled up a little
+     because the hero is taller here. */
   .m-hero__bg::after {
     background: linear-gradient(
       to bottom,
-      rgba(245, 241, 230, 0.96) 0%,
-      rgba(245, 241, 230, 0.95) 46%,
-      rgba(245, 241, 230, 0.52) 70%,
-      rgba(245, 241, 230, 0.6) 88%,
+      rgba(245, 241, 230, 0) 52%,
+      rgba(245, 241, 230, 0.7) 84%,
       var(--m-cream) 100%
     );
   }
