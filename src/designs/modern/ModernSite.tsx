@@ -56,7 +56,8 @@ export default function ModernSite() {
     target: heroRef,
     offset: ["start start", "end start"],
   });
-  const backdropY = useTransform(scrollYProgress, [0, 1], [0, still ? 0 : 90]);
+  // the card drifts up a touch as the hero leaves, so it reads as floating
+  const cardY = useTransform(scrollYProgress, [0, 1], [0, still ? 0 : -46]);
   const chipAY = useTransform(scrollYProgress, [0, 1], [0, still ? 0 : -80]);
   const chipBY = useTransform(scrollYProgress, [0, 1], [0, still ? 0 : -40]);
   const titleY = useTransform(scrollYProgress, [0, 1], [0, still ? 0 : 34]);
@@ -95,31 +96,6 @@ export default function ModernSite() {
       <main id="top">
         {/* ---------- hero ---------- */}
         <section className="m-hero" ref={heroRef}>
-          {/*
-           * The footage runs full-bleed behind the whole first screen — it is
-           * wider than the 1180px hero column, so it breaks out in CSS rather
-           * than here. Veiled back to cream by .m-hero__bg::after: near-opaque
-           * under the copy, thin over the right-hand third where the chips
-           * float, solid at the bottom edge so it hands off to the marquee.
-           */}
-          <div className="m-hero__bg" aria-hidden="true">
-            {reduced ? (
-              // a still frame, and no 646KB download, when motion is unwelcome
-              <img src={backdropPoster} alt="" />
-            ) : (
-              <motion.video
-                style={{ y: backdropY }}
-                src={backdropMp4}
-                poster={backdropPoster}
-                autoPlay
-                muted
-                loop
-                playsInline
-                preload="auto"
-              />
-            )}
-          </div>
-
           <div className="m-hero__copy">
             <motion.p className="m-chip m-chip--kicker" {...rise(0)}>
               <span className="m-chip__dot" />
@@ -145,8 +121,41 @@ export default function ModernSite() {
             </motion.div>
           </div>
 
-          {/* no card any more: an empty ratio box that the chips hang off */}
+          {/*
+           * The footage sits in a floating card beside the copy — the hero
+           * itself is plain cream. Below the copy once the grid stacks under
+           * 820px. The chips hang off the card's corners, so they stay
+           * outside its overflow: hidden frame.
+           */}
           <div className="m-hero__media">
+            <motion.div
+              className="m-hero__card"
+              style={{ y: cardY }}
+              {...(reduced
+                ? {}
+                : ({
+                    // opacity/scale only: `y` belongs to the parallax value above
+                    initial: { opacity: 0, scale: 0.96 },
+                    whileInView: { opacity: 1, scale: 1 },
+                    viewport: { once: true, margin: "-10% 0px" },
+                    transition: { duration: 0.8, delay: 0.18, ease: [0.2, 0.7, 0.2, 1] as const },
+                  } as const))}
+            >
+              {reduced ? (
+                // a still frame, and no 646KB download, when motion is unwelcome
+                <img src={backdropPoster} alt="" />
+              ) : (
+                <video
+                  src={backdropMp4}
+                  poster={backdropPoster}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  preload="auto"
+                />
+              )}
+            </motion.div>
             <motion.div className="m-chip m-chip--float m-chip--route" style={{ y: chipAY }} {...rise(0.3)}>
               <span className="m-chip__dot" />
               Panamá → global markets

@@ -246,69 +246,6 @@
   align-items: center;
 }
 
-/* ---- the footage behind the first screen ----
-   The hero is a 1180px column but the backdrop is not, so it breaks out of
-   its own parent to viewport width. Safe to use 100vw: .d-modern clips its
-   own overflow-x, so this can never open a horizontal scrollbar. */
-
-.m-hero__bg {
-  position: absolute;
-  inset: 0;
-  left: 50%;
-  width: 100vw;
-  transform: translateX(-50%);
-  z-index: 0;
-  overflow: hidden;
-  pointer-events: none;
-  background: var(--m-cream);
-}
-
-.m-hero__bg > * {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center 45%;
-  /* only a whisper of grading so it still sits with the paper palette */
-  filter: saturate(0.9) contrast(1.05);
-  /* headroom, so the parallax drift never exposes an edge */
-  scale: 1.1;
-}
-
-/* No wash over the footage — the client wants the video to read. All that is
-   left is the bottom hand-off into the marquee, so the section boundary is a
-   fade rather than a hard cut. Legibility is handled on the type instead
-   (see .m-hero__title / .m-hero__stand), which costs the video nothing. */
-.m-hero__bg::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    to bottom,
-    rgba(245, 241, 230, 0) 60%,
-    rgba(245, 241, 230, 0.7) 86%,
-    var(--m-cream) 100%
-  );
-}
-
-/* both columns ride above the backdrop */
-.m-hero__copy,
-.m-hero__media {
-  position: relative;
-  z-index: 1;
-}
-
-/* With the veil gone the copy sits straight on moving footage, so each glyph
-   carries its own contrast. A tight cream halo tracks the letterforms and
-   leaves the picture between them untouched — unlike a scrim, which dims the
-   whole frame to protect a few hundred pixels of text. */
-.m-hero__title,
-.m-hero__cta .m-textlink {
-  text-shadow:
-    0 1px 1px rgba(245, 241, 230, 0.92),
-    0 0 14px rgba(245, 241, 230, 0.85),
-    0 0 34px rgba(245, 241, 230, 0.6);
-}
-
 .m-hero__title {
   margin-top: 22px;
   font-family: var(--m-serif);
@@ -319,40 +256,48 @@
   max-width: 13ch;
 }
 
-/* The headline is big enough that the halo alone carries it, but the
-   standfirst is small, light-weight ink-soft and sat unreadable over the
-   darker shots (the canal lock especially). It gets the nav's glass — same
-   blur, same tint, same hairline — so it reads as part of the existing
-   chrome rather than a patch, and the footage still shows through it. */
 .m-hero__stand {
   margin-top: 24px;
   max-width: 52ch;
-  width: fit-content;
   font-size: 1.1rem;
   line-height: 1.7;
   color: var(--m-ink-soft);
-  padding: 16px 22px;
-  border-radius: 20px;
-  background: rgba(250, 247, 238, 0.72);
-  -webkit-backdrop-filter: blur(16px) saturate(1.4);
-  backdrop-filter: blur(16px) saturate(1.4);
-  border: 1px solid rgba(21, 28, 73, 0.1);
-  box-shadow: 0 14px 40px rgba(21, 28, 73, 0.1);
 }
 
 .m-hero__cta {
-  margin-top: 30px;
+  margin-top: 34px;
   display: flex;
   align-items: center;
   gap: 26px;
   flex-wrap: wrap;
 }
 
-/* No card here any more — the backdrop *is* the image. This box just keeps
-   the 4/5 footprint the card used to have, so the floating chips land in the
-   same place and the hero keeps its height. */
+/* The media column is only a positioning context: the chips hang off its
+   corners and must stay clear of the card's overflow: hidden. */
 .m-hero__media {
+  position: relative;
+  z-index: 1;
+}
+
+/* The footage, carded. Ink backing so the frame never flashes cream while
+   the first frame decodes. */
+.m-hero__card {
   aspect-ratio: 4 / 5;
+  border-radius: 26px;
+  overflow: hidden;
+  background: var(--m-ink);
+  border: 1px solid rgba(21, 28, 73, 0.1);
+  box-shadow: 0 30px 70px rgba(21, 28, 73, 0.18);
+}
+
+.m-hero__card > * {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 45%;
+  /* only a whisper of grading so it still sits with the paper palette */
+  filter: saturate(0.9) contrast(1.05);
 }
 
 /* chips */
@@ -1049,27 +994,45 @@
     display: none;
   }
 
+  /* Stacked, and the card slots in directly under the headline — so the
+     copy block dissolves into the hero grid (display: contents) and the five
+     pieces are ordered by hand. Row gap goes to 0 because each piece already
+     carries its own margin-top. */
   .m-hero {
     grid-template-columns: 1fr;
+    row-gap: 0;
     padding-top: 110px;
   }
 
-  /* stacked now, so the footage shows below the copy rather than beside it */
-  .m-hero__media {
-    max-width: 460px;
-    aspect-ratio: 4 / 3;
+  .m-hero__copy {
+    display: contents;
   }
 
-  /* Stacked, so the copy sits fully over the footage and the halo is doing
-     all the work. Only the bottom hand-off remains, pulled up a little
-     because the hero is taller here. */
-  .m-hero__bg::after {
-    background: linear-gradient(
-      to bottom,
-      rgba(245, 241, 230, 0) 52%,
-      rgba(245, 241, 230, 0.7) 84%,
-      var(--m-cream) 100%
-    );
+  .m-hero__copy > .m-chip--kicker {
+    order: 1;
+  }
+
+  .m-hero__title {
+    order: 2;
+  }
+
+  .m-hero__media {
+    order: 3;
+    margin-top: 30px;
+    max-width: 460px;
+  }
+
+  .m-hero__stand {
+    order: 4;
+  }
+
+  .m-hero__cta {
+    order: 5;
+  }
+
+  /* wider crop once it is a full-width block rather than a side column */
+  .m-hero__card {
+    aspect-ratio: 4 / 3;
   }
 
   .m-chip--route {
