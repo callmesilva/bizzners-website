@@ -500,11 +500,14 @@
   border: none;
 }
 
-.m-about__photo .bz-ph {
-  --ph-radius: 24px;
+/* fills the bento cell whatever height the lead card next to it ends up */
+.m-about__img {
+  display: block;
+  width: 100%;
   height: 100%;
-  aspect-ratio: auto;
   min-height: 230px;
+  object-fit: cover;
+  object-position: center 40%;
 }
 
 .m-about__quote {
@@ -535,13 +538,28 @@
 
 /* ---------- dark panels ---------- */
 
+/* The panel used to be a flat navy gradient; it is now a photograph of a
+   team at work. The type here is light-on-dark, so the picture carries a
+   navy scrim — heaviest under the heading and paragraph on the left,
+   thinning to the right where there is nothing to read and the room can
+   show. Vite rewrites this url() through the asset pipeline, so it picks up
+   the Pages base path like every other import. */
 .m-panel {
   position: relative;
   border-radius: 30px;
   padding: clamp(36px, 6vw, 72px);
-  background:
-    radial-gradient(80% 130% at 90% 0%, rgba(74, 127, 224, 0.35), transparent 55%),
-    linear-gradient(130deg, #131a4e 0%, #1c2568 55%, #232d7d 100%);
+  background-color: #131a4e;
+  background-image:
+    linear-gradient(
+      100deg,
+      rgba(19, 26, 78, 0.95) 0%,
+      rgba(19, 26, 78, 0.9) 40%,
+      rgba(19, 26, 78, 0.62) 70%,
+      rgba(19, 26, 78, 0.34) 100%
+    ),
+    url("../../assets/office-team.jpg");
+  background-size: cover, cover;
+  background-position: center, center 18%;
   color: #f1f3ff;
   overflow: hidden;
 }

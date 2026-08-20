@@ -4,12 +4,12 @@ import "@fontsource-variable/instrument-sans";
 import { useRef } from "react";
 import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { Logo } from "../../brand/Logo";
-import { Placeholder } from "../../shared/Placeholder";
 import { site } from "../../content/site";
 import { useMedia } from "../../shared/useMedia";
 import { useStill } from "../../shared/useStill";
 import { CycleWheel } from "./CycleWheel";
 import backdropMp4 from "../../assets/backdrop.mp4";
+import negotiationImg from "../../assets/negotiation-table.jpg";
 import backdropPoster from "../../assets/backdrop-poster.jpg";
 import "./modern.css";
 
@@ -184,7 +184,13 @@ export default function ModernSite() {
               <p className="m-body">{site.ally.p1}</p>
             </motion.article>
             <motion.div className="m-card m-about__photo" {...rise(0.1)}>
-              <Placeholder id="IMG-M2" label="At the table — negotiation" ratio="3 / 2" />
+              <img
+                className="m-about__img"
+                src={negotiationImg}
+                alt="Two professionals shaking hands across a meeting table"
+                loading="lazy"
+                decoding="async"
+              />
             </motion.div>
             <motion.blockquote className="m-card m-about__quote" {...rise(0.18)}>
               <span className="m-about__mark" aria-hidden="true">
