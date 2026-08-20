@@ -236,6 +236,7 @@
 /* ---------- hero ---------- */
 
 .m-hero {
+  position: relative;
   max-width: 1180px;
   margin: 0 auto;
   padding: clamp(130px, 18vh, 190px) clamp(18px, 4vw, 44px) clamp(48px, 7vh, 84px);
@@ -243,6 +244,67 @@
   grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
   gap: clamp(28px, 5vw, 72px);
   align-items: center;
+}
+
+/* ---- the footage behind the first screen ----
+   The hero is a 1180px column but the backdrop is not, so it breaks out of
+   its own parent to viewport width. Safe to use 100vw: .d-modern clips its
+   own overflow-x, so this can never open a horizontal scrollbar. */
+
+.m-hero__bg {
+  position: absolute;
+  inset: 0;
+  left: 50%;
+  width: 100vw;
+  transform: translateX(-50%);
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background: var(--m-cream);
+}
+
+.m-hero__bg > * {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 45%;
+  /* footage is cool and contrasty; pull it toward the paper palette */
+  filter: saturate(0.7) contrast(1.03) brightness(1.05);
+  /* headroom, so the parallax drift never exposes an edge */
+  scale: 1.1;
+}
+
+/* The veil that keeps ink-on-cream readable over moving footage: near-opaque
+   under the copy column, thinning to the right where the chips float over
+   open frame, and closing to solid cream at the bottom so the section hands
+   off to the marquee without a seam. Vertical layer is listed first — it
+   paints on top, so the bottom fade always wins. */
+.m-hero__bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(245, 241, 230, 0.5) 0%,
+      rgba(245, 241, 230, 0) 20%,
+      rgba(245, 241, 230, 0) 58%,
+      var(--m-cream) 100%
+    ),
+    linear-gradient(
+      96deg,
+      rgba(245, 241, 230, 0.97) 0%,
+      rgba(245, 241, 230, 0.94) 38%,
+      rgba(245, 241, 230, 0.72) 62%,
+      rgba(245, 241, 230, 0.44) 100%
+    );
+}
+
+/* both columns ride above the backdrop */
+.m-hero__copy,
+.m-hero__media {
+  position: relative;
+  z-index: 1;
 }
 
 .m-hero__title {
@@ -271,18 +333,11 @@
   flex-wrap: wrap;
 }
 
+/* No card here any more — the backdrop *is* the image. This box just keeps
+   the 4/5 footprint the card used to have, so the floating chips land in the
+   same place and the hero keeps its height. */
 .m-hero__media {
-  position: relative;
-}
-
-.m-hero__ph {
-  border-radius: 26px;
-  overflow: hidden;
-  box-shadow: 0 30px 70px rgba(21, 28, 73, 0.18);
-}
-
-.m-hero__ph .bz-ph {
-  --ph-radius: 26px;
+  aspect-ratio: 4 / 5;
 }
 
 /* chips */
@@ -966,8 +1021,23 @@
     padding-top: 110px;
   }
 
+  /* stacked now, so the footage shows below the copy rather than beside it */
   .m-hero__media {
-    max-width: 420px;
+    max-width: 460px;
+    aspect-ratio: 4 / 3;
+  }
+
+  /* copy sits *over* the footage instead of next to it, so the veil has to
+     run top-to-bottom: heavy behind the headline, thin over the chips. */
+  .m-hero__bg::after {
+    background: linear-gradient(
+      to bottom,
+      rgba(245, 241, 230, 0.96) 0%,
+      rgba(245, 241, 230, 0.95) 46%,
+      rgba(245, 241, 230, 0.52) 70%,
+      rgba(245, 241, 230, 0.6) 88%,
+      var(--m-cream) 100%
+    );
   }
 
   .m-chip--route {
