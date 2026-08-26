@@ -1,10 +1,11 @@
 import "@fontsource/instrument-serif/400.css";
 import "@fontsource/instrument-serif/400-italic.css";
 import "@fontsource-variable/instrument-sans";
-import { useRef } from "react";
+import { useRef, type CSSProperties } from "react";
 import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { Logo } from "../../brand/Logo";
 import { site } from "../../content/site";
+import { useMarqueeFill } from "../../shared/useMarqueeFill";
 import { useMedia } from "../../shared/useMedia";
 import { useStill } from "../../shared/useStill";
 import { CycleWheel } from "./CycleWheel";
@@ -51,6 +52,9 @@ export default function ModernSite() {
   const compact = useMedia("(max-width: 820px)");
   const still = reduced || compact;
 
+  // the marquee fills itself to the viewport — see useMarqueeFill
+  const [marqueeRef, marqueeCopies] = useMarqueeFill();
+
   const heroRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: heroRef,
@@ -79,7 +83,7 @@ export default function ModernSite() {
       {/* floating glass nav */}
       <header className="m-nav">
         <a className="m-nav__brand" href="#top" aria-label="Bizzners — top">
-          <Logo size={20} tagline={false} />
+          <Logo size={30} tagline={false} />
         </a>
         <nav className="m-nav__links" aria-label="Sections">
           {site.nav.map((item) => (
@@ -169,8 +173,14 @@ export default function ModernSite() {
 
         {/* ---------- marquee ---------- */}
         <div className="m-marquee" aria-hidden="true">
-          <div className="m-marquee__track">
-            {[0, 1].map((copy) => (
+          <div
+            className="m-marquee__track"
+            ref={marqueeRef}
+            // more copies = a longer track, so the duration scales with it and
+            // the pixels-per-second speed stays the same on every screen
+            style={{ "--m-marquee-copies": marqueeCopies } as CSSProperties}
+          >
+            {Array.from({ length: marqueeCopies }, (_, copy) => (
               <div className="m-marquee__set" key={copy}>
                 {site.cooperation.pillars.map((p, i) =>
                   i % 2 ? (
@@ -370,7 +380,7 @@ export default function ModernSite() {
       </main>
 
       <footer className="m-foot">
-        <Logo size={19} />
+        <Logo size={28.5} />
         <p>{site.legal}</p>
         <a href="#top">Back to top ↑</a>
       </footer>

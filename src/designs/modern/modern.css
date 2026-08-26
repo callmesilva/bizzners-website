@@ -365,7 +365,9 @@
 .m-marquee__track {
   display: flex;
   width: max-content;
-  animation: m-scroll 30s linear infinite;
+  /* copy count is set inline by useMarqueeFill — enough sets to overrun the
+     viewport, and the duration follows so the scroll speed never changes */
+  animation: m-scroll calc(var(--m-marquee-copies, 2) * 15s) linear infinite;
 }
 
 .m-marquee__set {
