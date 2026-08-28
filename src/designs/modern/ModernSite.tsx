@@ -5,9 +5,11 @@ import { useRef, type CSSProperties } from "react";
 import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { Logo } from "../../brand/Logo";
 import { site } from "../../content/site";
+import { Rich } from "../../shared/Rich";
 import { useMarqueeFill } from "../../shared/useMarqueeFill";
 import { useMedia } from "../../shared/useMedia";
 import { useStill } from "../../shared/useStill";
+import { cssVarsFor, useTweaks } from "../../tweaks/TweaksProvider";
 import { CycleWheel } from "./CycleWheel";
 import backdropMp4 from "../../assets/backdrop.mp4";
 import negotiationImg from "../../assets/negotiation-table.jpg";
@@ -46,6 +48,11 @@ function Words({ text, accent, base = 0 }: { text: string; accent?: string; base
 }
 
 export default function ModernSite() {
+  // Every value the client can still move lives in the tweak panel; `defaults`
+  // in src/tweaks/tweaks.ts is what ships, so with the panel untouched this
+  // renders exactly what it rendered before the panel existed.
+  const { tweaks: t } = useTweaks();
+
   // "reduced" now also covers motion parked by feature flag — every timeline
   // below stays in place, it just renders its end state immediately
   const reduced = Boolean(useReducedMotion()) || useStill();
@@ -79,11 +86,16 @@ export default function ModernSite() {
         } as const);
 
   return (
-    <div className="d-modern">
+    <div className="d-modern" style={cssVarsFor(t)}>
       {/* floating glass nav */}
       <header className="m-nav">
-        <a className="m-nav__brand" href="#top" aria-label="Bizzners — top">
-          <Logo size={30} tagline={false} />
+        <a
+          className="m-nav__brand"
+          href="#top"
+          aria-label="Bizzners — top"
+          style={{ "--logo-weight": t.logoWeight } as CSSProperties}
+        >
+          <Logo size={t.logoSize} tagline={t.logoTagline} />
         </a>
         <nav className="m-nav__links" aria-label="Sections">
           {site.nav.map((item) => (
@@ -103,13 +115,13 @@ export default function ModernSite() {
           <div className="m-hero__copy">
             <motion.p className="m-chip m-chip--kicker" {...rise(0)}>
               <span className="m-chip__dot" />
-              {site.hero.kicker}
+              {t.heroKicker}
             </motion.p>
             <motion.h1 className="m-hero__title" style={{ y: titleY }} {...rise(0.06)}>
-              Your business, <em>projected</em> — one step away.
+              <Rich text={t.heroTitle} />
             </motion.h1>
             <motion.p className="m-hero__stand" {...rise(0.14)}>
-              {site.hero.standfirst}
+              {t.heroStand}
             </motion.p>
             <motion.div className="m-hero__cta" {...rise(0.2)}>
               <a className="m-btn" href="#contact">
@@ -162,7 +174,7 @@ export default function ModernSite() {
             </motion.div>
             <motion.div className="m-chip m-chip--float m-chip--route" style={{ y: chipAY }} {...rise(0.3)}>
               <span className="m-chip__dot" />
-              Panamá → global markets
+              {t.heroChip}
             </motion.div>
             <motion.div className="m-chip m-chip--float m-chip--facts" style={{ y: chipBY }} {...rise(0.38)}>
               <b>{site.counts.pillars}</b> pillars · <b>{site.counts.steps}</b> moves ·{" "}
@@ -199,8 +211,10 @@ export default function ModernSite() {
           <div className="m-about__grid">
             <motion.article className="m-card m-about__lead" {...rise(0)}>
               <p className="m-kicker">{site.ally.kicker}</p>
-              <h2 className="m-h2">A negotiation ally with <em>broad vision</em></h2>
-              <p className="m-body">{site.ally.p1}</p>
+              <h2 className="m-h2">
+                <Rich text={t.allyHeading} />
+              </h2>
+              <p className="m-body">{t.allyP1}</p>
             </motion.article>
             <motion.div className="m-card m-about__photo" {...rise(0.1)}>
               <img
@@ -215,7 +229,7 @@ export default function ModernSite() {
               <span className="m-about__mark" aria-hidden="true">
                 “
               </span>
-              <p>{site.ally.p2}</p>
+              <p>{t.allyP2}</p>
             </motion.blockquote>
           </div>
         </section>
@@ -244,7 +258,7 @@ export default function ModernSite() {
             <motion.div className="m-cell m-cell--intro" {...rise(0)}>
               <p className="m-kicker">{site.cooperation.kicker}</p>
               <h2 className="m-h2">
-                Structured cooperation at <em>every level</em>
+                <Rich text={t.methodHeading} />
               </h2>
               <p className="m-body">
                 Seven pillars hold up every engagement — from first promotion to a firm
@@ -280,7 +294,7 @@ export default function ModernSite() {
           <motion.div className="m-cycle__head" {...rise(0)}>
             <p className="m-kicker">{site.cycle.kicker}</p>
             <h2 className="m-h2">
-              Eight moves. One <em>disciplined loop.</em>
+              <Rich text={t.cycleHeading} />
             </h2>
             <p className="m-body">{site.cycle.sub}</p>
           </motion.div>

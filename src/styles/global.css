@@ -134,7 +134,8 @@ html[data-motion="off"] *::after {
 
 .bz-logo__word {
   font-family: var(--font-logo);
-  font-weight: 700;
+  /* --logo-weight lets one instance sit heavier than the rest (nav vs footer) */
+  font-weight: var(--logo-weight, 700);
   font-size: 1em;
   line-height: 0.95;
   letter-spacing: 0.005em;
