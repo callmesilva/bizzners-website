@@ -25,50 +25,30 @@ flags alone will not do it any more.
 | `src/designs/wild` | 03·A Command Center | space-navy HUD, three.js trade globe | GSAP + three.js |
 | `src/designs/wildb` | 03·B Manifest | cargo-paper brutalism, container train, stamps | GSAP |
 
+### Round two, settled 28 Aug 2026
+
+The client's second review arrived as adjectives — *"más grande, más
+imponente"*, *"probar el color morado con otro color"*, *"el recuadro a lo mejor
+no redondeado"*. Rather than guess, a temporary tweak panel put each note on the
+live site as a control and he sent back the values he landed on. They are now
+folded into the source and the panel is gone:
+
+- **Accent** — cobalt `#2b4bf2` → deep green `#157a53`. He compared it against
+  plum, wine, terracotta and turquoise, and chose to keep *one* accent rather
+  than give "every level" / 01–07 and the cycle block colours of their own.
+  `--m-accent` in `modern.css` is the single knob; soft/dark/glow derive from it.
+- **Wordmark** — 30px → 56px in the nav, weight 700 → 630 (bigger reads better
+  lighter). It floors at 38px on narrow phones so the pill still fits.
+- **Video frame** — corner radius 26px → 7px.
+- **"Panamá"** — out of the hero kicker and the chip over the footage. It stays
+  in the contact block and the legal line.
+- **Copy** — "coordinating *many of the steps*" (not "everything"), "in solid
+  *and new* markets", "a *talented and well-rounded* unit of collaborators".
+  Logged in [`COPY-NOTES.md`](COPY-NOTES.md).
+
 Also parked, for the same reason: `src/selector/` (the old concept picker that was
 `/`), `src/shared/TypeSwitch.tsx` and `src/shared/DemoSwitch.tsx`. They are
 unreachable from the live entry point and only reference each other.
-
-## The tweak panel (review round, temporary)
-
-The owner's second-round notes came in as adjectives — *"más grande, más
-imponente"*, *"probar el color morado con otro color"*, *"el recuadro a lo
-mejor no redondeado"*. Rather than pick numbers on his behalf and mail
-screenshots back and forth, `src/tweaks/` puts every ambiguous note on the live
-site as a control: an **Ajustes** button, bottom right of every page.
-
-One accordion group per bullet of his email, each quoting the bullet verbatim:
-
-| # | Group | What it moves |
-| --- | --- | --- |
-| 1 | El logo | Nav wordmark size, weight, "Business Builders" line |
-| 2 | La palabra «Panamá» | Hero kicker and the chip over the video |
-| 3 | El color de acento | `--m-cobalt` — "projected", the button, dots, links |
-| 4 | Colores por sección | "every level" + numerals 01–07, and the cycle block, each on its own colour |
-| 5 | El recuadro del video | Corner radius (the bullet's actual subject), frame shape, shadow |
-| 6 | Los textos | Hero title and standfirst, the two "Who we are" paragraphs, both lower headings |
-
-Editable strings take `*asterisks*` for the serif-italic accent (`shared/Rich.tsx`)
-— plain text in, no HTML he could break.
-
-**`Copiar datos`** is the point of the whole thing: it puts a Spanish summary on
-his clipboard — only what he actually moved, each change next to the note that
-prompted it, followed by a JSON payload we replay on our side. The panel holds
-his state in `localStorage`, so he can leave and come back; *Mantener pulsado:
-ver el original* flips to the untouched site for as long as the button is held.
-
-How it plugs in, and how it comes out:
-
-- `src/tweaks/tweaks.ts` — the schema. `defaults` **is** what ships, so an
-  untouched panel renders precisely what the site rendered before it existed
-  (the hero grid still resolves to 7fr/5fr, the card still to 26px).
-- `cssVarsFor()` sets the custom properties inline on `.d-modern`; `modern.css`
-  derives every accent from `--m-cobalt` via `color-mix()`, so one override
-  retints the design.
-- `?tweaks=0` takes the panel off the page — use it for screenshots.
-- **Removing it** once the values are agreed: fold the settled numbers into
-  `modern.css` / `content/site.ts`, drop `src/tweaks/`, and unwrap
-  `<TweaksProvider>` in `App.tsx`. Nothing else depends on it.
 
 ## Run it
 
@@ -118,9 +98,8 @@ src/
   designs/modern/        ← THE SITE (ModernSite.tsx, modern.css, CycleWheel.tsx)
   designs/               ← simple, simpleb, modernb, wild, wildb — parked
   selector/              ← the old "/" concept picker — parked
-  tweaks/                ← the client tweak panel (temporary — see above)
   brand/Logo.tsx         ← recreated bizzners® wordmark (HTML/CSS, Baloo 2)
-  shared/                ← reveal / media / still hooks, marquee fill, Rich, Placeholder
+  shared/                ← reveal / media / still hooks, marquee fill, Placeholder
   config/                ← flags + typography sets (vestigial, see above)
   styles/                ← global.css, typography.css
   assets/                ← hero video + poster, photography

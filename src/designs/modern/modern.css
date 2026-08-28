@@ -1,6 +1,6 @@
 /* ================================================================
    Concept 02 — MODERN · "2026 editorial-tech"
-   Cream paper, ink navy, electric cobalt. Instrument Serif moments
+   Cream paper, ink navy, deep green. Instrument Serif moments
    over Instrument Sans structure; bento grids; Motion choreography.
    ================================================================ */
 
@@ -11,19 +11,15 @@
   --m-ink: #151c49;
   --m-ink-soft: #3e4577;
   --m-muted: #6d7295;
-  --m-cobalt: #2b4bf2;
-  --m-cobalt-soft: #8fa3f8;
-  /* every accent derived from --m-cobalt, so a single override retints the
-     whole design — see cssVarsFor() in src/tweaks/TweaksProvider.tsx */
-  --m-cobalt-dark: color-mix(in oklab, var(--m-cobalt) 86%, #000);
-  --m-cobalt-glow: color-mix(in srgb, var(--m-cobalt) 32%, transparent);
-  /* sections the client asked to evaluate on their own; unset = follow above */
-  --m-accent-method: var(--m-cobalt);
-  --m-accent-cycle: var(--m-cobalt);
-  --m-video-radius: 26px;
-  --m-video-ratio: 4 / 5;
-  --m-video-ratio-sm: 4 / 3;
-  --m-video-shadow: 0 30px 70px rgba(21, 28, 73, 0.18);
+  /* The design opened electric cobalt. The client compared it live against
+     plum, wine, terracotta, turquoise and this, and settled on the green
+     (28 Aug 2026) — he also looked at giving "every level"/01–07 and the
+     cycle block colours of their own, and chose to keep one accent
+     throughout. Everything below derives from it, so it moves as one. */
+  --m-accent: #157a53;
+  --m-accent-soft: color-mix(in oklab, var(--m-accent) 45%, white);
+  --m-accent-dark: color-mix(in oklab, var(--m-accent) 86%, #000);
+  --m-accent-glow: color-mix(in srgb, var(--m-accent) 32%, transparent);
   --m-red: #d0342c;
   --m-line: #ddd6c1;
   --m-serif: "Instrument Serif", Georgia, "Times New Roman", serif;
@@ -56,19 +52,20 @@
 }
 
 .d-modern ::selection {
-  background: var(--m-cobalt);
+  background: var(--m-accent);
   color: #fff;
 }
 
+/* clears the floating pill — which the 56px wordmark made 8px taller */
 .d-modern section[id] {
-  scroll-margin-top: 104px;
+  scroll-margin-top: 112px;
 }
 
 .d-modern em {
   font-family: var(--m-serif);
   font-style: italic;
   font-weight: 400;
-  color: var(--m-cobalt);
+  color: var(--m-accent);
 }
 
 /* ---------- atoms ---------- */
@@ -78,11 +75,11 @@
   font-weight: 700;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--m-cobalt);
+  color: var(--m-accent);
 }
 
 .m-kicker--light {
-  color: var(--m-cobalt-soft);
+  color: var(--m-accent-soft);
 }
 
 .m-section {
@@ -118,7 +115,7 @@
 .m-panel .m-display em,
 .m-panel .m-h2 em,
 .m-display--sm em {
-  color: var(--m-cobalt-soft);
+  color: var(--m-accent-soft);
 }
 
 .m-body {
@@ -132,7 +129,7 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  background: var(--m-cobalt);
+  background: var(--m-accent);
   color: #fff;
   border-radius: 999px;
   padding: 15px 27px;
@@ -147,8 +144,8 @@
 
 .m-btn:hover {
   transform: translateY(-2px);
-  background: var(--m-cobalt-dark);
-  box-shadow: 0 16px 34px var(--m-cobalt-glow);
+  background: var(--m-accent-dark);
+  box-shadow: 0 16px 34px var(--m-accent-glow);
 }
 
 .m-btn svg {
@@ -170,8 +167,8 @@
 }
 
 .m-textlink:hover {
-  color: var(--m-cobalt);
-  text-decoration-color: var(--m-cobalt);
+  color: var(--m-accent);
+  text-decoration-color: var(--m-accent);
 }
 
 .m-word {
@@ -209,6 +206,9 @@
 .m-nav__brand {
   text-decoration: none;
   margin-right: auto;
+  /* bigger *and* lighter: at 56px the 700 of the footer mark reads as a slab,
+     so the client walked the weight back to 630 — see brand/Logo.tsx */
+  --logo-weight: 630;
 }
 
 .m-nav__links {
@@ -225,7 +225,7 @@
 }
 
 .m-nav__links a:hover {
-  color: var(--m-cobalt);
+  color: var(--m-accent);
 }
 
 .m-nav__cta {
@@ -240,7 +240,7 @@
 }
 
 .m-nav__cta:hover {
-  background: var(--m-cobalt);
+  background: var(--m-accent);
   transform: translateY(-1px);
 }
 
@@ -250,7 +250,7 @@
   position: relative;
   max-width: 1180px;
   margin: 0 auto;
-  padding: clamp(130px, 18vh, 190px) clamp(18px, 4vw, 44px) clamp(48px, 7vh, 84px);
+  padding: clamp(138px, 18vh, 190px) clamp(18px, 4vw, 44px) clamp(48px, 7vh, 84px);
   display: grid;
   grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
   gap: clamp(28px, 5vw, 72px);
@@ -293,12 +293,13 @@
 /* The footage, carded. Ink backing so the frame never flashes cream while
    the first frame decodes. */
 .m-hero__card {
-  aspect-ratio: var(--m-video-ratio);
-  border-radius: var(--m-video-radius);
+  aspect-ratio: 4 / 5;
+  /* the client walked this down from 26px; 7 keeps the corner from cutting */
+  border-radius: 7px;
   overflow: hidden;
   background: var(--m-ink);
   border: 1px solid rgba(21, 28, 73, 0.1);
-  box-shadow: var(--m-video-shadow);
+  box-shadow: 0 30px 70px rgba(21, 28, 73, 0.18);
 }
 
 .m-hero__card > * {
@@ -340,8 +341,8 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: var(--m-cobalt);
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--m-cobalt) 16%, transparent);
+  background: var(--m-accent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--m-accent) 16%, transparent);
 }
 
 .m-chip--float {
@@ -360,7 +361,7 @@
 }
 
 .m-chip--facts b {
-  color: var(--m-cobalt);
+  color: var(--m-accent);
   font-weight: 720;
 }
 
@@ -405,7 +406,7 @@
 .m-marquee__set em::after {
   content: "·";
   margin: 0 26px;
-  color: var(--m-cobalt);
+  color: var(--m-accent);
   font-style: normal;
   font-family: var(--m-sans);
 }
@@ -482,7 +483,7 @@
   font-family: var(--m-serif);
   font-size: 5.4rem;
   line-height: 1;
-  color: var(--m-cobalt);
+  color: var(--m-accent);
   opacity: 0.85;
 }
 
@@ -558,7 +559,7 @@
 
 .m-cell--pillar:hover {
   transform: translateY(-5px);
-  border-color: color-mix(in srgb, var(--m-cobalt) 40%, transparent);
+  border-color: color-mix(in srgb, var(--m-accent) 40%, transparent);
   box-shadow: 0 18px 40px rgba(21, 28, 73, 0.12);
 }
 
@@ -570,18 +571,12 @@
   padding: 12px 24px 12px 4px;
 }
 
-/* "every level" and the 01–07 numerals — the pair the client asked to see in
-   a colour of their own. Falls back to the site accent until it is set. */
-.m-method__grid .m-h2 em,
-.m-cell__n {
-  color: var(--m-accent-method);
-}
-
 .m-cell__n {
   font-family: var(--m-serif);
   font-style: italic;
   font-size: 1.9rem;
   line-height: 1;
+  color: var(--m-accent);
 }
 
 .m-cell--pillar h3 {
@@ -600,7 +595,7 @@
 .m-cell--next {
   grid-area: next;
   justify-content: space-between;
-  background: var(--m-cobalt);
+  background: var(--m-accent);
   border: none;
   color: #fff;
   text-decoration: none;
@@ -620,7 +615,7 @@
 
 .m-cell--next:hover {
   transform: translateY(-5px);
-  background: var(--m-cobalt-dark);
+  background: var(--m-accent-dark);
 }
 
 .m-cell--next:hover svg {
@@ -662,7 +657,7 @@
 }
 
 .m-cycle__list button:hover {
-  background: color-mix(in srgb, var(--m-accent-cycle) 7%, transparent);
+  background: color-mix(in srgb, var(--m-accent) 7%, transparent);
 }
 
 .m-cycle__num {
@@ -680,12 +675,8 @@
   transition: color 0.25s ease, font-size 0.25s ease;
 }
 
-/* the whole cycle block — heading accent, active step, wheel — moves together,
-   so "the loop in another colour" reads as one deliberate section */
-.m-cycle .m-h2 em,
-.m-cycle__list button.is-active .m-cycle__num,
-.m-wheel__label {
-  color: var(--m-accent-cycle);
+.m-cycle__list button.is-active .m-cycle__num {
+  color: var(--m-accent);
 }
 
 .m-cycle__list button.is-active .m-cycle__name {
@@ -693,7 +684,7 @@
   font-style: italic;
   font-weight: 400;
   font-size: 1.3rem;
-  color: var(--m-accent-cycle);
+  color: var(--m-accent);
 }
 
 /* wheel */
@@ -735,18 +726,18 @@
 }
 
 .m-wheel__dot.is-done {
-  fill: color-mix(in oklab, var(--m-accent-cycle) 45%, white);
-  stroke: color-mix(in oklab, var(--m-accent-cycle) 45%, white);
+  fill: var(--m-accent-soft);
+  stroke: var(--m-accent-soft);
 }
 
 .m-wheel__dot.is-active {
-  fill: var(--m-accent-cycle);
-  stroke: var(--m-accent-cycle);
+  fill: var(--m-accent);
+  stroke: var(--m-accent);
 }
 
 .m-wheel__halo {
   fill: none;
-  stroke: var(--m-accent-cycle);
+  stroke: var(--m-accent);
   stroke-width: 1.2;
   opacity: 0.55;
   animation: m-halo 1.8s ease-out infinite;
@@ -774,7 +765,7 @@
 }
 
 .m-wheel__node.is-active .m-wheel__index {
-  fill: var(--m-accent-cycle);
+  fill: var(--m-accent);
 }
 
 .m-wheel__center {
@@ -809,6 +800,7 @@
   font-size: 0.86rem;
   font-weight: 620;
   line-height: 1.35;
+  color: var(--m-accent);
 }
 
 /* ---------- chain banner ---------- */
@@ -864,7 +856,7 @@
 @media (min-width: 821px) {
   .m-tools__stack li {
     position: sticky;
-    top: calc(108px + var(--i) * 18px);
+    top: calc(116px + var(--i) * 18px);
   }
 
   .m-tools__stack {
@@ -877,7 +869,7 @@
   font-style: italic;
   font-size: clamp(3.6rem, 6vw, 5.4rem);
   line-height: 0.85;
-  color: var(--m-cobalt);
+  color: var(--m-accent);
 }
 
 .m-tools__stack h3 {
@@ -907,7 +899,7 @@
   font-family: var(--m-serif);
   font-style: italic;
   font-size: 1.5rem;
-  color: var(--m-cobalt-soft);
+  color: var(--m-accent-soft);
 }
 
 .m-end__card {
@@ -946,7 +938,7 @@
 }
 
 .m-end__card dd a:hover {
-  color: var(--m-cobalt-soft);
+  color: var(--m-accent-soft);
 }
 
 .m-btn--wa {
@@ -989,7 +981,7 @@
 }
 
 .m-foot a:hover {
-  color: var(--m-cobalt);
+  color: var(--m-accent);
 }
 
 /* ---------- responsive ---------- */
@@ -1052,10 +1044,9 @@
     order: 5;
   }
 
-  /* wider crop once it is a full-width block rather than a side column —
-     unless the client picked a shape on purpose, which then holds everywhere */
+  /* wider crop once it is a full-width block rather than a side column */
   .m-hero__card {
-    aspect-ratio: var(--m-video-ratio-sm);
+    aspect-ratio: 4 / 3;
   }
 
   .m-chip--route {

@@ -1,6 +1,7 @@
 interface LogoProps {
-  /** wordmark font size in px — everything else scales in em */
-  size?: number;
+  /** wordmark font size — a number is px; a string passes through, so a
+   *  caller can hand it a clamp() and let the mark scale with the viewport */
+  size?: number | string;
   tagline?: boolean;
   className?: string;
 }

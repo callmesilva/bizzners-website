@@ -2,8 +2,6 @@ import { useEffect, useLayoutEffect } from "react";
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-router-dom";
 import ModernSite from "./designs/modern/ModernSite";
 import { isStill } from "./shared/useStill";
-import { TweaksPanel } from "./tweaks/TweaksPanel";
-import { TweaksProvider } from "./tweaks/TweaksProvider";
 
 /**
  * One site, one route.
@@ -17,11 +15,6 @@ import { TweaksProvider } from "./tweaks/TweaksProvider";
  * The router stays because the design reads the current path through
  * `useStill`, and because it keeps old review links (`/modern`, `/wild-b`, …)
  * landing on the site instead of a blank page.
- *
- * Wrapped in <TweaksProvider> for the review round: the owner's notes came in
- * as adjectives ("más imponente", "otro color"), so the panel lets him settle
- * the numbers himself. `?tweaks=0` takes it off the page for screenshots — and
- * it comes out for good once the values are agreed. See src/tweaks.
  */
 
 /** Page chrome: body surface and the motion attribute, both before paint. */
@@ -44,20 +37,13 @@ function Chrome() {
 }
 
 export default function App() {
-  // opt-out rather than opt-in: the reviewer must never have to be told a URL
-  const showTweaks =
-    new URLSearchParams(window.location.search).get("tweaks") !== "0";
-
   return (
-    <TweaksProvider>
-      <BrowserRouter basename={import.meta.env.BASE_URL}>
-        <Chrome />
-        <Routes>
-          <Route path="/" element={<ModernSite />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </BrowserRouter>
-      {showTweaks && <TweaksPanel />}
-    </TweaksProvider>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
+      <Chrome />
+      <Routes>
+        <Route path="/" element={<ModernSite />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </BrowserRouter>
   );
 }

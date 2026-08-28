@@ -85,7 +85,7 @@ export function CycleWheel() {
             cy={C}
             r={R_NODE}
             fill="none"
-            stroke="var(--m-accent-cycle, var(--m-cobalt))"
+            stroke="var(--m-accent)"
             strokeWidth="2.6"
             strokeLinecap="round"
             transform={`rotate(-90 ${C} ${C})`}

@@ -37,20 +37,22 @@ export const site = {
   ],
 
   hero: {
-    kicker: "International trade facilitation · Panamá",
+    kicker: "International trade facilitation",
     titleA: "Your business, projected —",
     titleB: "one step away.",
     standfirst:
-      "At Bizzners we promote and facilitate the expansion of your business or industry — coordinating everything it takes to place your products and services in the international market.",
+      "At Bizzners we promote and facilitate the expansion of your business or industry — coordinating many of the steps it takes to place your products and services in the international market.",
+    /** the chip that floats over the hero footage */
+    chip: "Global markets",
     ctaPrimary: "Start a conversation",
     ctaSecondary: "See how we work",
   },
 
   ally: {
     kicker: "Who we are",
-    heading: "A negotiation ally with broad vision",
-    p1: "We know how to influence the commercial positioning of your product — and we give you the tools and solutions to negotiate its participation in solid markets, near or far from your local base.",
-    p2: "At Bizzners you have an ally in negotiations: a versatile, multidisciplinary unit of collaborators — an organizational concept very different from a sales department. We connect you, as a producer, with buyers in any location, with a complete view of the available options. An advantage of real value for growth.",
+    heading: "A negotiation ally with broad vision, in solid and new markets",
+    p1: "We know how to influence the commercial positioning of your product — and we give you the tools and solutions to negotiate its participation in solid and new markets, near or far from your local base.",
+    p2: "At Bizzners you have an ally in negotiations: a talented and well-rounded unit of collaborators — an organizational concept very different from a sales department. We connect you, as a producer, with buyers in any location, with a complete view of the available options. An advantage of real value for growth.",
   },
 
   growth: {
