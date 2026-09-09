@@ -67,55 +67,66 @@ blocks `id_rsa`, `*.pem` and friends so a stray download can't be committed.
 Until either key works, use `make dist-zip` and upload through cPanel → File Manager →
 `public_html` → Upload → Extract. That path needs no setup at all.
 
-### 2. HTTPS — PositiveSSL, already paid for
+### 2. HTTPS — Let's Encrypt, issued from a workstation
 
-There is a **PositiveSSL certificate for `bizzners.com` already on the Namecheap
-account** (SSL ID 27323500, CA order 2236918579), covering `bizzners.com` and
-`www.bizzners.com`, pre-paid for 1 year — almost certainly the certificate bundled
-with the Stellar plan. Nothing further to buy.
-
-It sat **PENDING and unissued since 2024-07-21**, which is why HTTPS has been broken
-the whole time. Validation method is **HTTP**: Sectigo fetches a token file from the
-site. That file has been in place since the day the hosting started:
-
-```
-/.well-known/pki-validation/425B6D0D4ACFDA66EBFDB6A8689C4961.txt
-```
-
-As of 2026-09-09 the order is being processed by cPanel's SSL auto-installer.
-
-**Two things must stay true or HTTP validation fails:**
-
-1. `.well-known/` must survive deploys. `make purge-old-site` protects it explicitly,
-   and `make deploy` never deletes.
-2. The SPA catch-all must not swallow the token. It doesn't — `.htaccess` serves real
-   files before rewriting, verified by fetching the token and getting `200 text/plain`
-   rather than the app's HTML.
-
-Check progress any time:
+**Live since 2026-09-09.** `bizzners.com` and `www.bizzners.com` are covered by a Let's
+Encrypt certificate, and `.htaccess` redirects HTTP → HTTPS.
 
 ```bash
-make ssl-check
+make ssl-check   # expects subject=CN=bizzners.com, issuer=Let's Encrypt
 ```
 
-When the subject reads `bizzners.com` instead of `*.web-hosting.com`, the certificate
-is live. Then uncomment the HTTPS redirect in `public/.htaccess` and redeploy.
+#### Why it is issued from a workstation and not the server
 
-**What cPanel does *not* offer here** (checked 2026-09-09): SSL/TLS → Status has no
-"Run AutoSSL" button, the Wizard reports no products available, and the Namecheap SSL
-tool only installs certificates purchased at Namecheap. `acme.sh` was the fallback, but
-it must run on the server and shell access is disabled — `make ssl-setup` refuses early
-and the script stays in `scripts/` in case shell is ever enabled.
+Everything easier was checked first and does not exist on this plan:
 
-**Fallback if this certificate never issues:** [`dns/CLOUDFLARE.md`](dns/CLOUDFLARE.md)
-puts Cloudflare in front for free edge TLS. Not needed if the PositiveSSL lands, but the
-runbook and the full DNS inventory in `dns/bizzners.com.zone` are worth keeping either
-way — `make dns-check` verifies the zone against a known-good 22-record baseline.
+| Option | Outcome |
+| --- | --- |
+| cPanel **AutoSSL** | No "Run AutoSSL" button — disabled by the host. |
+| cPanel cert **Wizard** | "There are no SSL/TLS products available at this time." |
+| **Namecheap SSL** tool | Installs only certificates *purchased* at Namecheap. |
+| The account's own **PositiveSSL** | SSL ID 27323500, pre-paid, but PENDING since 2024-07-21 with its HTTP validation never completed. Watched for 40 minutes on 2026-09-09; never issued. |
+| `acme.sh` **on the server** | Impossible — shell access is disabled. |
 
-### 3. Then turn on the HTTPS redirect
+What does work is SFTP. `scripts/issue-cert-local.sh` and the renewal kit outside the
+repo drive **certbot** with a `--manual-auth-hook`: the hook writes the HTTP-01 token
+over SFTP and **blocks until the token is actually being served**, then Let's Encrypt
+validates.
 
-`public/.htaccess` ships with its force-HTTPS block commented out. Enable it only after
-`make ssl-check` shows the real certificate, then redeploy.
+Two failure modes are baked into that design, both hit for real:
+
+- **404** — the first attempt used an `acme.sh` webroot with a background sync loop.
+  Validation fires about a second after the token is written, faster than a new SFTP
+  connection opens. A sync loop cannot win that race; the hook must *block*.
+- **403** — `mktemp` creates files `0600` and the web server runs as another user.
+  Challenge files must be `0644`. Confirmed by uploading one of each: 403 vs 200.
+
+#### Renewal — manual, and the one thing that can break the site
+
+**Expires 2026-12-08.** There is no server shell, so nothing can install a renewed
+certificate automatically. The kit lives outside this repo (it holds a private key):
+
+```
+~/Documents/GitHub/coworking/bizzners-certbot/
+  ./renew.sh                 # no-ops until within 30 days of expiry
+  ./renew.sh --force-renewal
+```
+
+Then re-paste `latest/` into cPanel → SSL/TLS → **Install and Manage SSL**.
+
+> **The permanent fix is shell access** — free on Stellar, one support ticket. With it,
+> `scripts/setup-letsencrypt.sh` runs `acme.sh` on the server, installs through the
+> cPanel API, and renews itself with no manual step. Worth doing before December: now
+> that the site redirects to HTTPS, an expired certificate is a hard failure for every
+> visitor, not a downgrade.
+
+`.htaccess` lets `/.well-known/acme-challenge/` through **ahead of the HTTPS redirect**,
+so renewals keep validating over plain HTTP. Verified by probe, not assumed — a blanket
+redirect is the usual way people break their own renewals.
+
+**Fallback if this ever becomes unworkable:** [`dns/CLOUDFLARE.md`](dns/CLOUDFLARE.md)
+puts Cloudflare in front for free, self-renewing edge TLS. `dns/bizzners.com.zone` and
+`make dns-check` exist to make that move safe — the domain carries live email.
 
 ## What `.htaccess` does
 

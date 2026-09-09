@@ -13,12 +13,11 @@
   # redirect and the SPA catch-all. Without this, `acme.sh` renewals fail.
   RewriteRule ^\.well-known/acme-challenge/ - [L]
 
-  # HTTPS redirect — enable this once the PositiveSSL certificate is installed
-  # (`make ssl-check` shows subject=bizzners.com, not *.web-hosting.com), then
-  # redeploy. Turning it on beforehand sends every visitor into a certificate
-  # error, because the origin still answers 443 with the shared hosting cert.
-  # RewriteCond %{HTTPS} !=on
-  # RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+  # Force HTTPS. Enabled 2026-09-09, once the Let's Encrypt certificate was
+  # installed and verified on both bizzners.com and www. This sits AFTER the
+  # acme-challenge bypass above deliberately, so HTTP-01 renewals keep working.
+  RewriteCond %{HTTPS} !=on
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
   # A real file or directory wins — assets, favicon, robots.
   RewriteCond %{REQUEST_FILENAME} -f [OR]
