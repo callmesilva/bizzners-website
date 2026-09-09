@@ -3,8 +3,9 @@
 The site for **Bizzners Business Builders** (Panamá) — international trade
 facilitation, built from the 2024 brochure (`BizznersBasics.2024.pdf`).
 
-**Live:** https://callmesilva.github.io/bizzners-website/ — staging on GitHub Pages,
-carrying `<meta name="robots" content="noindex">` until it moves to bizzners.com.
+**Live:** https://bizzners.com — Namecheap shared hosting (cPanel), the owner's own
+plan. Staging mirror at https://bizzners.web.app. Carries
+`<meta name="robots" content="noindex">` until the owner signs off.
 
 ## The design is settled
 
@@ -55,8 +56,9 @@ unreachable from the live entry point and only reference each other.
 ```bash
 make dev          # http://localhost:5173 (installs deps on first run)
 make build        # production build → dist/
-make build-pages  # same build with the GitHub Pages base path + SPA fallback
 make preview      # serve the production build
+make deploy       # build + publish to bizzners.com over SSH
+make dist-zip     # package dist/ for manual cPanel upload (no SSH needed)
 make typecheck    # tsc --noEmit
 make help         # every target
 ```
@@ -80,8 +82,11 @@ Node ≥ 22 and pnpm (see `packageManager`). Override the port with `make dev PO
 - **Accessibility floor** — semantic sections, `prefers-reduced-motion` respected
   everywhere (reveals become instant, parallax flattens, the cycle wheel stops
   auto-advancing).
-- **Deploys free** — GitHub Pages workflow in `.github/workflows/deploy.yml`; every
-  push to `main` publishes. See [`DEPLOYMENT.md`](DEPLOYMENT.md).
+- **Deploys to the owner's own hosting** — `make deploy` rebuilds and rsyncs to
+  bizzners.com; `make deploy-preview` gives a throwaway Firebase URL for showing the
+  client a change first. SPA routing and cache headers ride along in `public/.htaccess`.
+  See [`DEPLOYMENT.md`](DEPLOYMENT.md) — including two setup steps only the account
+  owner can do.
 
 ### Vestigial config
 

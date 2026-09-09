@@ -1,0 +1,5 @@
+# Copy to deploy.local.mk (gitignored) and fill in from the cPanel dashboard:
+#   Namecheap → Hosting List → Shared Hosting → Server Hostname / cPanel UserName
+NC_HOST = serverNNN.web-hosting.com
+NC_USER = your_cpanel_user
+NC_PORT = 21098

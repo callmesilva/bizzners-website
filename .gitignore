@@ -6,3 +6,17 @@ dist
 /*.png
 .playwright-mcp/
 tsconfig.tsbuildinfo
+.firebase/
+firebase-debug.log
+*-debug.log
+bizzners-site.zip
+# SSH keys must never land in the repo — a downloaded cPanel private key especially.
+id_rsa
+id_rsa.pub
+id_ed25519
+id_ed25519.pub
+*.pem
+*.ppk
+
+# Deploy target identifies the hosting account; this repo is public.
+deploy.local.mk

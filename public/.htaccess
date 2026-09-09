@@ -1,0 +1,61 @@
+# bizzners.com — Apache/LiteSpeed config for the Vite SPA build.
+#
+# Lives in public/ so `vite build` copies it to dist/, and dist/ is what gets
+# uploaded to public_html. Editing it on the server is pointless — the next
+# deploy overwrites it. Edit it here.
+
+# ---------------------------------------------------------------- SPA routing
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # Let's Encrypt HTTP-01 challenges pass through untouched, ahead of every
+  # redirect and the SPA catch-all. Without this, `acme.sh` renewals fail.
+  RewriteRule ^\.well-known/acme-challenge/ - [L]
+
+  # HTTPS redirect — enable this once the PositiveSSL certificate is installed
+  # (`make ssl-check` shows subject=bizzners.com, not *.web-hosting.com), then
+  # redeploy. Turning it on beforehand sends every visitor into a certificate
+  # error, because the origin still answers 443 with the shared hosting cert.
+  # RewriteCond %{HTTPS} !=on
+  # RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+  # A real file or directory wins — assets, favicon, robots.
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # Everything else boots the SPA, which restores the route client-side.
+  RewriteRule ^ index.html [L]
+</IfModule>
+
+# ---------------------------------------------------------------- caching
+<IfModule mod_headers.c>
+  # Vite fingerprints assets (index-DwvMyoKZ.js), so the name changes whenever the
+  # bytes do — safe to cache for a year.
+  <FilesMatch "-[A-Za-z0-9_-]{8}\.(js|css|woff2?|jpe?g|png|svg|mp4)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+
+  # index.html is the one unhashed file. It must never be cached, or a deploy
+  # stays invisible while browsers keep asking for assets that no longer exist.
+  <FilesMatch "\.html$">
+    Header set Cache-Control "no-cache, max-age=0, must-revalidate"
+  </FilesMatch>
+</IfModule>
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/javascript \
+    application/javascript application/json image/svg+xml
+</IfModule>
+
+# ---------------------------------------------------------------- misc
+# Fonts and video need correct types; some shared hosts still miss these.
+<IfModule mod_mime.c>
+  AddType font/woff2 .woff2
+  AddType video/mp4  .mp4
+  AddType image/svg+xml .svg
+</IfModule>
+
+# No directory listings.
+Options -Indexes

@@ -1,0 +1,42 @@
+; bizzners.com — complete zone as it existed on 2026-09-09, read from the
+; authoritative nameserver (dns1.namecheaphosting.com) before the move to
+; Cloudflare. Import this, then fix proxy status per dns/CLOUDFLARE.md.
+;
+; Zone transfer (AXFR) was refused, so every record here was queried by name.
+$TTL 300
+@	IN	A	199.188.205.31
+www	IN	CNAME	bizzners.com.
+
+; cPanel service hosts — ALL must stay DNS-only (grey cloud) in Cloudflare.
+mail		IN	A	199.188.205.31
+ftp		IN	A	199.188.205.31
+cpanel		IN	A	199.188.205.31
+webmail		IN	A	199.188.205.31
+webdisk		IN	A	199.188.205.31
+cpcontacts	IN	A	199.188.205.31
+cpcalendars	IN	A	199.188.205.31
+autodiscover	IN	A	199.188.205.31
+autoconfig	IN	A	199.188.205.31
+whm		IN	A	199.188.205.31
+
+; Mail routing — Namecheap Private Email.
+@	IN	MX	5 mx1-hosting.jellyfish.systems.
+@	IN	MX	10 mx2-hosting.jellyfish.systems.
+@	IN	MX	20 mx3-hosting.jellyfish.systems.
+
+; SPF. NOTE: the live record starts "+a", which authorizes whatever the apex A
+; record points at. Once the apex is proxied, "+a" would resolve to Cloudflare's
+; IPs instead of the mail server. Replace it with the literal IP it means today
+; (199.188.205.31) to preserve the exact same authorization. See CLOUDFLARE.md.
+@	IN	TXT	"v=spf1 +a +mx +ip4:199.188.205.8 +ip4:199.188.205.15 include:spf.web-hosting.com ~all"
+
+; DKIM — cPanel default selector. Two strings, must stay concatenated exactly.
+default._domainkey	IN	TXT	( "v=DKIM1; k=rsa; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvX3qGikghDzP/rszJ3QW4URbBVIqdGMXNTsh7EC4P72B4Om5FmS2PpimEowa9QFXhdO6PiVaZwpFFAGqo4d6w8ZfPHj4ZLRgsjM7VPyunsR3d4L8LNmeDepe/UXFhoT1NK65/4SflFsIJWO51WQtomhaIgEGDziixoKDbflTt2WWqyl4f9SQfYVTD4abNl2S9"
+	"4BIgGUeQhXdB5CnlH0zLhWKyjYBrTku+NcLMg2vsH5zhnCMdGEmXYxHDNM0rmB3Kus9DEIFIu/ldgDpRqxRj8BLGelINQBl2I2iwPcSqxCV+NYaRMS6Du0psghnZzrmSUq6nPuZygirNKvEUV3z3QIDAQAB;" )
+
+; Service discovery for mail/calendar clients.
+_autodiscover._tcp	IN	SRV	0 0 443 cpanelemaildiscovery.cpanel.net.
+_caldavs._tcp		IN	SRV	0 0 2080 server303.web-hosting.com.
+_carddavs._tcp		IN	SRV	0 0 2080 server303.web-hosting.com.
+
+; Absent by design (confirmed queried, no answer): AAAA, CAA, _dmarc.
